@@ -1,0 +1,177 @@
+/* ===================== КНОПКА МЕНЮ ===================== */
+.menu-button-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    pointer-events: none; /* Не влияет на layout */
+}
+
+.menu-button {
+    background: var(--filter-glass-bg);
+    backdrop-filter: blur(var(--filter-glass-blur)) saturate(var(--filter-glass-saturate));
+    border: 1px solid var(--filter-border-color);
+    border-radius: 50%; /* Круглая кнопка */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto; /* Восстанавливаем pointer events для кнопки */
+    width: 40px; /* Компактный размер */
+    height: 40px; /* Компактный размер */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--filter-glass-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-button:hover {
+    background: var(--filter-btn-bg-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+}
+
+.menu-button:active {
+    transform: translateY(-1px);
+}
+
+.menu-icon {
+    width: 18px; /* Компактная иконка */
+    height: 18px;
+    filter: brightness(0) invert(1); /* Белая иконка как в контактном виджете */
+    transition: all 0.3s ease;
+}
+
+/* ===================== МЕНЮ ОВЕРЛЕЙ ===================== */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--filter-glass-bg);
+    backdrop-filter: blur(var(--filter-glass-blur)) saturate(var(--filter-glass-saturate));
+    border: 1px solid var(--filter-border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    min-width: 300px;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: var(--filter-glass-shadow);
+}
+
+.menu-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--filter-btn-bg);
+    border: 1px solid var(--filter-btn-border);
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.menu-close:hover {
+    background: var(--filter-btn-bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.menu-nav {
+    margin-top: 1rem;
+}
+
+.menu-title {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center; /* Центрируем список */
+}
+
+.menu-item {
+    margin-bottom: 0.5rem;
+}
+
+.menu-link {
+    display: inline-block; /* Изменяем на inline-block для центрирования */
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 24px; /* Увеличиваем padding для лучшего вида */
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    border: 1px solid var(--filter-btn-border);
+    min-width: 200px; /* Минимальная ширина для центрирования */
+    background: var(--filter-btn-bg);
+}
+
+.menu-link:hover {
+    background: var(--filter-btn-bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+}
+
+/* ===================== АДАПТИВНОСТЬ ===================== */
+@media (max-width: 768px) {
+    .menu-button-container {
+        top: 15px;
+        right: 15px;
+    }
+    
+    .menu-button {
+        width: 36px; /* Компактный размер на мобильных */
+        height: 36px;
+    }
+    
+    .menu-icon {
+        width: 16px; /* Компактная иконка на мобильных */
+        height: 16px;
+    }
+    
+    .menu-content {
+        margin: 20px;
+        padding: 1.5rem;
+        min-width: auto;
+        width: calc(100% - 40px);
+    }
+    
+    .menu-link {
+        min-width: 150px; /* Меньше минимальная ширина на мобильных */
+        padding: 10px 20px;
+    }
+}

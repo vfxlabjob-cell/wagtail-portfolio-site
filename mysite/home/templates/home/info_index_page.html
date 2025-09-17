@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block body_class %}template-info-index-page{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="info-page-header">
+            <h1>{{ page.title }}</h1>
+            
+            {% if page.intro %}
+                <div class="intro">
+                    {{ page.intro|richtext }}
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if info_pages %}
+            <div class="info-pages-grid">
+                {% for info_page in info_pages %}
+                    <div class="info-page-card">
+                        <a href="{% pageurl info_page %}" class="info-page-link">
+                            <h3>{{ info_page.title }}</h3>
+                            {% if info_page.specific.body %}
+                                <p>{{ info_page.specific.body|striptags|truncatewords:20 }}</p>
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.info-page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #404040;
+}
+
+.info-page-header h1 {
+    margin: 0 0 1rem 0;
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.info-pages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.info-page-card {
+    background: #2a2a2a;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.info-page-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-color: #555555;
+}
+
+.info-page-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.info-page-link h3 {
+    margin: 0 0 1rem 0;
+    color: #ffffff;
+    font-size: 1.25rem;
+}
+
+.info-page-link p {
+    margin: 0;
+    color: #cccccc;
+    line-height: 1.5;
+}
+
+.intro {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ffffff;
+}
+</style>
+{% endblock %}

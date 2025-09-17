@@ -1,0 +1,1244 @@
+/* ==============================================
+    1. ПЕРЕМЕННЫЕ И БАЗОВЫЕ СТИЛИ
+============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+:root {
+    --color-background-main: #0c0c0c;
+    --grid-gap-size: 5px;
+    --color-bg-container: #131313;
+    --color-text-primary: #cccccc;
+    --color-text-heading: #ffffff;
+    
+    /* ==============================================
+       AMBIENT LIGHT НАСТРОЙКИ
+    ============================================== */
+    
+    /* === ОСНОВНЫЕ НАСТРОЙКИ ПОДСВЕТКИ === */
+    
+    /* Размер подсветки относительно видео (120% = немного больше видео) */
+    --ambient-light-width: 120%;
+    --ambient-light-height: 140%;
+    
+    /* Размытие подсветки (40px = сильное размытие, 20px = слабое) */
+    --ambient-light-blur: 40px;
+    
+    /* Прозрачность подсветки (0.6 = 60% видимости) */
+    --ambient-light-opacity: 0.6;
+    
+    /* Скорость появления/исчезновения подсветки */
+    --ambient-light-transition: 0.3s ease;
+    
+    /* === НАСТРОЙКИ АНИМАЦИИ === */
+    
+    /* Длительность пульсации (2s = 2 секунды на цикл) */
+    --ambient-pulse-duration: 2s;
+    
+    /* Минимальная прозрачность при пульсации */
+    --ambient-pulse-min-opacity: 0.2;
+    
+    /* Максимальная прозрачность при пульсации */
+    --ambient-pulse-max-opacity: 0.4;
+    
+    /* Масштаб пульсации (1.05 = увеличение на 5%) */
+    --ambient-pulse-scale: 1.05;
+    
+    /* === АДАПТИВНЫЕ НАСТРОЙКИ === */
+    
+    /* Настройки для мобильных устройств */
+    --ambient-mobile-width: 110%;
+    --ambient-mobile-height: 130%;
+    --ambient-mobile-blur: 30px;
+    --heading-font-size: 36px; /* Размер заголовка в блоке Heading */
+    --paragraph-font-size: 16px; /* Размер текста в блоке Paragraph */
+    
+    /* === КОНТЕЙНЕР ФИЛЬТРА (GLASS) === */
+    --filter-glass-bg-hex: #ffffff;                /* Базовый цвет стекла (HEX, есть пипетка) */
+    --filter-glass-bg-opacity: 0.06;               /* Прозрачность заливки стекла */
+    --filter-glass-bg: color-mix(in srgb, var(--filter-glass-bg-hex) calc(var(--filter-glass-bg-opacity) * 100%), transparent);
+    --filter-glass-blur: 10px;                     /* Сила blur в стекле */
+    --filter-glass-saturate: 140%;                 /* Насыщенность в backdrop-filter */
+    --filter-glass-shadow: 0 2px 12px rgba(0, 0, 0, 0.25); /* Тень контейнера */
+    --filter-border-color-hex: #ffffff;            /* Базовый цвет нижней границы (HEX) */
+    --filter-border-color-opacity: 0.12;           /* Прозрачность границы контейнера */
+    --filter-border-color: color-mix(in srgb, var(--filter-border-color-hex) calc(var(--filter-border-color-opacity) * 100%), transparent);
+    --filter-container-bg-on-header: transparent;  /* Фон контейнера над чёрной шапкой (до сетки) */
+
+    /* === КНОПКИ ФИЛЬТРА (НЕАКТИВНЫЕ) === */
+    --filter-btn-bg-hex: #ffffff;                  /* Цвет заливки (HEX) */
+    --filter-btn-bg-opacity: 0.04;                 /* Прозрачность неактивной */
+    --filter-btn-bg: color-mix(in srgb, var(--filter-btn-bg-hex) calc(var(--filter-btn-bg-opacity) * 100%), transparent);
+    --filter-btn-bg-hover-opacity: 0.30;           /* Прозрачность при ховере */
+    --filter-btn-bg-hover: color-mix(in srgb, var(--filter-btn-bg-hex) calc(var(--filter-btn-bg-hover-opacity) * 100%), transparent);
+    --filter-btn-text: #c2c2c2;                    /* Цвет текста на кнопке (HEX) */
+    --filter-btn-text-on-glass: #111111;           /* Цвет текста в состоянии стекла (над сеткой) */
+    --filter-btn-border-hex: #dbdbdb;              /* Цвет рамки (HEX) */
+    --filter-btn-border-opacity: 0.10;             /* Прозрачность рамки */
+    --filter-btn-border: color-mix(in srgb, var(--filter-btn-border-hex) calc(var(--filter-btn-border-opacity) * 100%), transparent);
+    --filter-btn-radius: 20px;                     /* Радиус скругления */
+
+    /* === КНОПКИ ФИЛЬТРА (АКТИВНЫЕ) === */
+    --filter-btn-active-bg-hex: #ffffff;           /* Цвет заливки активной (HEX) */
+    --filter-btn-active-opacity: 0.95;             /* Прозрачность активной */
+    --filter-btn-active-bg: color-mix(in srgb, var(--filter-btn-active-bg-hex) calc(var(--filter-btn-active-opacity) * 100%), transparent);
+    --filter-btn-active-text: #111111;             /* Цвет текста активной (HEX) */
+    --filter-btn-active-border-hex: #000000;       /* Цвет рамки активной (HEX) */
+    --filter-btn-active-border-opacity: 0.30;      /* Прозрачность рамки активной */
+    --filter-btn-active-border: color-mix(in srgb, var(--filter-btn-active-border-hex) calc(var(--filter-btn-active-border-opacity) * 100%), transparent);
+
+    /* === Контроллеры иконок на карточках === */
+    --icon-size: 22px;                          /* Базовый размер иконок */
+    --icon-color: 255, 255, 255;                 /* Базовый цвет (R,G,B) */
+    --icon-opacity: 1;                           /* Прозрачность иконок */
+    --btn-bg-hex: #ffffff;                       /* Базовый фон круглой кнопки */
+    --btn-bg-opacity: 0.55;                      /* Прозрачность фона */
+    --btn-border-hex: #ffffff;                   /* Рамка кнопки */
+    --btn-border-opacity: 0.30;                  /* Прозрачность рамки */
+    --btn-size: 48px;                            /* Размер круглой кнопки */
+    --btn-radius: 999px;                         /* Скругление */
+
+    /* Индивидуальные контроллеры (Play) */
+    --icon-play-size: 36px;                      /* Размер иконки Play */
+    --icon-play-color: var(--icon-color);
+    --icon-play-opacity: var(--icon-opacity);
+    
+    /* Шрифты */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 400;
+    --font-weight-bold: 500;
+    --font-weight-extrabold: 800;
+    --btn-play-bg-hex: var(--btn-bg-hex);
+    --btn-play-bg-opacity: var(--btn-bg-opacity);
+    --btn-play-border-hex: var(--btn-border-hex);
+    --btn-play-border-opacity: var(--btn-border-opacity);
+    --btn-play-size: var(--btn-size);
+
+    /* Индивидуальные контроллеры (Open) */
+    --icon-open-size: 22px;                      /* Размер иконки Open */
+    --icon-open-color: var(--icon-color);
+    --icon-open-opacity: var(--icon-opacity);
+    --btn-open-bg-hex: var(--btn-bg-hex);
+    --btn-open-bg-opacity: var(--btn-bg-opacity);
+    --btn-open-border-hex: var(--btn-border-hex);
+    --btn-open-border-opacity: var(--btn-border-opacity);
+    --btn-open-size: var(--btn-size);
+
+    /* ==============================================
+       CARD HEAD БЛОК - ПОЛНЫЙ КОНТРОЛЬ ЦВЕТОВ
+    ============================================== */
+    
+    /* Основные цвета страницы карточки */
+    --card-page-bg: #111314;                     /* Фон всей страницы карточки */
+    --card-page-container-bg: #131516;           /* Фон контейнера страницы */
+    
+    /* Card Head контейнер */
+    --card-head-margin: 60px 0;                 /* Отступы Card Head блока */
+    --card-head-gap: 40px;                      /* Расстояние между медиа и инфо блоками */
+    
+    /* Медиа блок */
+    --card-media-bg: #1a1a1a;                   /* Фон медиа блока */
+    --card-media-border: 0.5px solid #131516;   /* Граница медиа блока */
+    --card-media-radius: 12px;                  /* Радиус скругления медиа блока */
+    --card-media-min-width: 400px;              /* Минимальная ширина медиа блока */
+    --card-media-min-height: 400px;             /* Минимальная высота медиа блока */
+    
+    /* Информационный блок */
+    --card-info-bg: #131516;                    /* Фон информационного блока */
+    --card-info-border-width: 1px;              /* Толщина границы информационного блока */
+    --card-info-border-color: #ffffff;          /* Цвет границы информационного блока */
+    --card-info-border-opacity: 0.3;              /* Прозрачность границы информационного блока (0-1) */
+    --card-info-border: var(--card-info-border-width) solid color-mix(in srgb, var(--card-info-border-color) calc(var(--card-info-border-opacity) * 100%), transparent); /* Граница информационного блока */
+    --card-info-radius: 12px;                   /* Радиус скругления информационного блока */
+    --card-info-width: 290px;                   /* Ширина информационного блока */
+    --card-info-padding: 40px 30px;             /* Внутренние отступы информационного блока */
+    
+    /* Поля информации */
+    --card-field-margin: 37px;                  /* Отступ между полями */
+    --card-field-padding: 5px;                 /* Отступ разделителя */
+    --card-field-border-width: 1px;             /* Толщина разделителя между полями */
+    --card-field-border-color: #e5e5e5;         /* Цвет разделителя между полями */
+    --card-field-border-opacity: 0.3;             /* Прозрачность разделителя между полями (0-1) */
+    --card-field-border: var(--card-field-border-width) solid color-mix(in srgb, var(--card-field-border-color) calc(var(--card-field-border-opacity) * 100%), transparent); /* Разделитель между полями */
+    
+    /* /* Лейблы полей */
+    --card-label-size: 14px;                    /* Размер шрифта лейбла */
+    --card-label-weight: 200;                   /* Вес шрифта лейбла */
+    --card-label-color: #e5e5e5;                   /* Цвет лейбла */
+    --card-label-spacing: 0.5px;                /* Межбуквенное расстояние лейбла */
+    --card-label-margin: 1px;                   /* Отступ снизу от лейбла */
+    
+    /* Значения полей */
+    --card-value-size: 24px;                    /* Размер шрифта значения */
+    --card-value-weight: 400;                   /* Вес шрифта значения */
+    --card-value-color: #e5e5e5;                   /* Цвет значения */
+    --card-value-line-height: 1.4;              /* Межстрочное расстояние значения */
+    
+}
+
+body {
+    font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    background-color: var(--card-page-bg);
+    margin: 0;
+    padding: 0;
+    color: var(--color-text-primary);
+    overflow-x: hidden; /* Убираем горизонтальную прокрутку */
+}
+
+/* ==============================================
+    2. ОБЩИЙ КОНТЕЙНЕР
+============================================== */
+.container {
+    width: 100%; /* Адаптивная ширина */
+    max-width: 1200px; /* Максимальная ширина для всех экранов */
+    margin: 40px auto;
+    padding: 40px;
+    border-radius: 8px;
+    background-color: var(--card-page-container-bg);
+}
+
+.intro {
+    font-size: 1.1em;
+    margin-bottom: 2rem;
+    color: var(--color-text-secondary);
+}
+
+.secondary-intro {
+    font-size: 1em;
+    margin-bottom: 2rem;
+    color: var(--color-text-secondary);
+    opacity: 0.8;
+}
+
+/* ==============================================
+    3. ГЛАВНАЯ СТРАНИЦА (СЕТКА)
+============================================== */
+.template-index-page .container {
+    text-align: center !important;
+    margin-bottom: 0;
+}
+
+.template-cards-index-page .container {
+    text-align: center !important;
+    margin-bottom: 0;
+}
+
+/* Специальный отступ для страниц проектов */
+.template-project-page .container {
+    margin-top: 140px;
+}
+
+.template-index-page h1 {
+    font-size: 48px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.02em;
+    margin: 0 0 20px 0;
+    color: var(--color-text-heading);
+}
+.filter-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 40px 0;
+    padding: 0 20px;
+    position: sticky; /* фиксируем фильтр при прокрутке */
+    top: 0;
+    z-index: 1000;
+    background: var(--filter-container-bg-on-header); /* фон до появления стекла */
+    transition: background-color 0.25s ease, backdrop-filter 0.25s ease, -webkit-backdrop-filter 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    border-bottom: 1px solid transparent;
+}
+.filter-container.is-glass {
+    background: var(--filter-glass-bg);
+    -webkit-backdrop-filter: blur(var(--filter-glass-blur)) saturate(var(--filter-glass-saturate));
+    backdrop-filter: blur(var(--filter-glass-blur)) saturate(var(--filter-glass-saturate));
+    border-bottom-color: var(--filter-border-color);
+    box-shadow: var(--filter-glass-shadow);
+    border-radius: 0;
+}
+.filter-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.filter-btn { display: inline-block; padding: 8px 20px; border: 1px solid var(--filter-btn-border); border-radius: var(--filter-btn-radius); color: var(--filter-btn-text); text-decoration: none; font-size: 14px; transition: all 0.2s ease-in-out; cursor: pointer; background-color: var(--filter-btn-bg); }
+.filter-btn:hover { background-color: var(--filter-btn-bg-hover); border-color: var(--filter-btn-border); }
+.filter-btn.active { background-color: var(--filter-btn-active-bg); color: var(--filter-btn-active-text); border-color: var(--filter-btn-active-border); font-weight: bold; }
+/* В состоянии стекла оставляем те же белые кнопки */
+
+/* Когда фильтр наезжает на сетку (is-glass), делаем текст неактивных кнопок темнее для читаемости */
+.filter-container.is-glass .filter-btn { color: var(--filter-btn-text-on-glass); }
+.filter-container.is-glass .filter-btn.active { color: var(--filter-btn-active-text); }
+
+.portfolio-grid-full-width { display: grid; grid-template-columns: repeat(9, 1fr); gap: var(--grid-gap-size); width: 100%; padding: 0 20px; }
+/* Расширенная сетка брейкпоинтов */
+@media (min-width: 1920px) { .portfolio-grid-full-width { grid-template-columns: repeat(9, 1fr); } }
+@media (min-width: 1440px) and (max-width: 1919px) { .portfolio-grid-full-width { grid-template-columns: repeat(9, 1fr); } }
+@media (min-width: 1200px) and (max-width: 1439px) { .portfolio-grid-full-width { grid-template-columns: repeat(6, 1fr); } }
+@media (min-width: 992px) and (max-width: 1199px) { .portfolio-grid-full-width { grid-template-columns: repeat(5, 1fr); } }
+@media (min-width: 768px) and (max-width: 991px) { .portfolio-grid-full-width { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 576px) and (max-width: 767px) { .portfolio-grid-full-width { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 575px) { 
+    .portfolio-grid-full-width { grid-template-columns: repeat(2, 1fr); }
+    /* Делаем превью (включая видео) квадратными на мобилках */
+    .portfolio-grid-full-width .card-image-wrapper { aspect-ratio: 1 / 1; }
+    .portfolio-grid-full-width .card-image { width: 100%; height: 100%; object-fit: cover; }
+}
+.portfolio-card { display: block; }
+.portfolio-card:hover { opacity: 0.8; }
+.card-image-wrapper { position: relative; overflow: hidden; width: 100%; height: auto; }
+.card-image { display: block; width: 100%; height: 100%; object-fit: cover; transition: filter 0.2s ease; }
+/* Размытие изображения карточки при наведении (без изменения transform, чтобы не мешать GSAP) */
+.portfolio-card:hover .card-image { filter: blur(3px) brightness(1.0); }
+
+/* Центрированный оверлей с иконкой стрелки */
+.card-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 1; }
+.overlay-btn { display: inline-flex; align-items: center; justify-content: center; width: var(--btn-size); height: var(--btn-size); border-radius: var(--btn-radius); background: color-mix(in srgb, var(--btn-bg-hex) calc(var(--btn-bg-opacity) * 100%), transparent); border: 1px solid color-mix(in srgb, var(--btn-border-hex) calc(var(--btn-border-opacity) * 100%), transparent); }
+.overlay-icon { width: var(--icon-size); height: var(--icon-size); filter: invert(1); opacity: var(--icon-opacity); }
+
+/* Индивидуальные настройки */
+.overlay-btn--play { width: var(--btn-play-size); height: var(--btn-play-size); background: color-mix(in srgb, var(--btn-play-bg-hex) calc(var(--btn-play-bg-opacity) * 100%), transparent); border-color: color-mix(in srgb, var(--btn-play-border-hex) calc(var(--btn-play-border-opacity) * 100%), transparent); }
+.overlay-btn--play .overlay-icon { width: var(--icon-play-size); height: var(--icon-play-size); opacity: var(--icon-play-opacity); }
+
+.overlay-btn--open { width: var(--btn-open-size); height: var(--btn-open-size); background: color-mix(in srgb, var(--btn-open-bg-hex) calc(var(--btn-open-bg-opacity) * 100%), transparent); border-color: color-mix(in srgb, var(--btn-open-border-hex) calc(var(--btn-open-border-opacity) * 100%), transparent); }
+.overlay-btn--open .overlay-icon { width: var(--icon-open-size); height: var(--icon-open-size); opacity: var(--icon-open-opacity); }
+.portfolio-card:hover .card-overlay { opacity: 1; pointer-events: auto; }
+
+/* Плейсхолдер, если нет thumbnail_image */
+.card-placeholder { background: #222; }
+
+/* ====== МОДАЛЬНОЕ ВИДЕО ====== */
+.video-modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 9999; }
+.video-modal.is-open { display: flex; }
+.video-modal[aria-hidden="true"] { display: none; }
+.video-modal__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.65); }
+.video-modal__dialog { position: relative; width: min(92vw, 1200px); aspect-ratio: 16 / 9; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 8px; overflow: hidden; }
+.video-modal__player { width: 100%; height: 100%; object-fit: contain; background: #000; }
+.video-modal__close { position: absolute; top: 6px; right: 10px; width: 32px; height: 32px; border-radius: 16px; border: 0; background: rgba(0,0,0,0.6); color: #fff; cursor: pointer; font-size: 18px; line-height: 32px; z-index: 1; }
+
+
+/* ==============================================
+    4. СТРАНИЦА ПРОЕКТА
+============================================== */
+.project-header { 
+    margin-bottom: 40px; 
+    position: relative;
+}
+
+/* Кнопка назад */
+.back-button {
+    position: absolute;
+    top: 20px;  /* Отступ сверху */
+    left: 20px; /* Отступ слева */
+    z-index: 10;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.back-icon {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    padding: 0;
+    filter: brightness(0) invert(1); /* Делаем иконку белой */
+}
+
+/* Адаптивность для кнопки назад */
+/* Ноутбуки и большие экраны (≥1024px) - одинаковое положение */
+@media (min-width: 1024px) {
+    .back-button {
+        top: 20px;  /* Одинаковый отступ для ноутбуков и больших экранов */
+        left: 170px;
+    }
+}
+
+/* Планшеты и мобильные (≤1023px) - другое положение */
+@media (max-width: 1023px) {
+    .back-button {
+        top: 15px;  /* Меньше отступ сверху на планшетах и мобильных */
+        left: 15px; /* Меньше отступ слева на планшетах и мобильных */
+    }
+    
+    .back-btn {
+        width: 36px;  /* Меньше размер кнопки на планшетах и мобильных */
+        height: 36px;
+    }
+    
+    .back-icon {
+        width: 18px;  /* Меньше размер иконки на планшетах и мобильных */
+        height: 18px;
+    }
+}
+
+/* Маленькие мобильные экраны (≤480px) */
+@media (max-width: 480px) {
+    .back-button {
+        top: 10px;  /* Еще меньше отступы на маленьких экранах */
+        left: 10px;
+    }
+    
+    .back-btn {
+        width: 32px;  /* Еще меньше размер кнопки */
+        height: 32px;
+    }
+    
+    .back-icon {
+        width: 16px;  /* Еще меньше размер иконки */
+        height: 16px;
+    }
+}
+
+.project-header h1 { 
+    color: var(--color-text-heading); 
+    text-align: center; 
+    font-size: 42px;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: -0.02em;
+    margin: 20px 0;
+    transform: translateY(40px);
+}
+
+
+/* ==============================================
+    5. STREAMFIELD БЛОКИ
+============================================== */
+
+/* Add Text блок */
+.add-text-container {
+    margin: 60px 0;
+}
+
+/* Варианты выравнивания */
+.add-text-center {
+    text-align: center;
+}
+
+.add-text-left {
+    text-align: left;
+}
+
+.add-text-right {
+    text-align: right;
+}
+
+.add-text-heading {
+    margin-bottom: 20px;
+}
+
+.add-text-heading h1,
+.add-text-heading h2,
+.add-text-heading h3,
+.add-text-heading h4,
+.add-text-heading h5,
+.add-text-heading h6 { 
+    margin: 0; 
+    color: var(--color-text-heading); 
+    font-weight: 400;
+    letter-spacing: -0.02em;
+}
+
+.add-text-heading h1 { font-size: 48px; font-weight: 400; }
+.add-text-heading h2 { font-size: 36px; font-weight: 300; }
+.add-text-heading h3 { font-size: 28px; font-weight: 300; }
+.add-text-heading h4 { font-size: 24px; font-weight: 400; }
+.add-text-heading h5 { font-size: 20px; font-weight: 400; }
+.add-text-heading h6 { font-size: 18px; font-weight: 400; }
+
+.add-text-paragraph {
+    max-width: 800px;
+    font-size: var(--paragraph-font-size);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+}
+
+/* Центрирование параграфа только для center выравнивания */
+.add-text-center .add-text-paragraph {
+    margin: 0 auto;
+}
+
+/* Для left и right выравнивания параграф занимает всю ширину */
+.add-text-left .add-text-paragraph,
+.add-text-right .add-text-paragraph {
+    margin: 0;
+    max-width: none;
+}
+
+/* Старые отдельные блоки (оставляем для совместимости) */
+.stream-heading { margin: 60px 0 20px 0; text-align: center; }
+.stream-heading h1,
+.stream-heading h2,
+.stream-heading h3,
+.stream-heading h4,
+.stream-heading h5,
+.stream-heading h6 { 
+    margin: 0; 
+    color: var(--color-text-heading); 
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: -0.02em;
+}
+.stream-heading h1 { font-size: 48px; font-weight: var(--font-weight-bold); }
+.stream-heading h2 { font-size: var(--heading-font-size); font-weight: var(--font-weight-semibold); line-height: 1.2; }
+.stream-heading h3 { font-size: 28px; font-weight: var(--font-weight-medium); }
+.stream-heading h4 { font-size: 24px; font-weight: var(--font-weight-medium); }
+.stream-heading h5 { font-size: 20px; font-weight: var(--font-weight-normal); }
+.stream-heading h6 { font-size: 18px; font-weight: var(--font-weight-normal); }
+.stream-paragraph { max-width: 800px; margin: 0 auto 40px auto; text-align: center; font-size: var(--paragraph-font-size); }
+.stream-image, .stream-video { margin: 0 0 40px 0; }
+.stream-image img, .stream-video video { display: block; width: 100%; height: auto; border-radius: 8px; }
+.stream-video figcaption { text-align: center; margin-top: 10px; font-style: italic; color: #888; }
+
+/* Стили для блоков с aspect ratio 2:1 */
+.stream-image-2-1, .stream-video-2-1 { 
+    margin: 0 auto 40px auto; 
+    max-width: 1200px;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.stream-image-2-1 img, .stream-video-2-1 video { 
+    display: block; 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;
+    border-radius: 8px; 
+}
+.stream-video-2-1 figcaption { 
+    text-align: center; 
+    margin-top: 10px; 
+    font-style: italic; 
+    color: #888; 
+}
+
+/* Адаптивность для блоков 2:1 */
+@media (max-width: 768px) {
+    .stream-image-2-1, .stream-video-2-1 { 
+        margin: 0 -20px 30px -20px; /* Компенсируем padding контейнера */
+        max-width: calc(100% + 40px); /* Расширяем на размер отступов */
+        padding: 0;
+        width: calc(100% + 40px);
+    }
+}
+
+
+/* 
+==============================================
+    СТИЛИ ДЛЯ ГАЛЕРЕИ В STREAMFIELD
+==============================================
+*/
+.stream-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 0 0 40px 0;
+    gap: 35px; /* Единый отступ для галереи */
+}
+
+
+.gallery-item {
+    margin: 0; /* Сбрасываем дефолтные margin у figure */
+}
+.gallery-item img,
+.gallery-item video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Принудительно делаем видео в галерее квадратными (1:1) */
+.gallery-item video {
+    aspect-ratio: 1 / 1;
+}
+
+/* Адаптивность для галереи (без изменений) */
+@media (max-width: 767px) {
+    .stream-gallery {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==============================================
+    CARD HEAD БЛОК
+============================================== */
+.card-head-container {
+    margin: var(--card-head-margin); /* Отступы сверху и снизу от блока */
+    display: flex; /* Горизонтальное расположение блоков */
+    gap: var(--card-head-gap); /* Расстояние между блоками */
+}
+
+/* Отдельный блок с медиа */
+.card-head-media-block {
+    flex: 1; /* Занимает оставшееся пространство */
+    min-width: var(--card-media-min-width); /* Минимальная ширина медиа-блока */
+    background: var(--card-media-bg); /* Фон медиа блока */
+    border-radius: var(--card-media-radius); /* Закругленные углы */
+    overflow: hidden; /* Скрываем переполнение для закругленных углов */
+    min-height: var(--card-media-min-height); /* Минимальная высота блока */
+    border: var(--card-media-border); /* Граница медиа блока */
+}
+
+.card-head-media-block img,
+.card-head-media-block video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Обрезка изображения по размеру */
+    display: block;
+}
+
+/* Отдельный блок с информацией */
+.card-head-info-block {
+    flex: 0 0 var(--card-info-width); /* Фиксированная ширина информационной панели */
+    background: var(--card-info-bg); /* Фон информационного блока */
+    border-radius: var(--card-info-radius); /* Закругленные углы */
+    padding: var(--card-info-padding); /* Внутренние отступы */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Выравнивание по верхнему краю */
+    border: var(--card-info-border); /* Граница информационного блока */
+}
+
+.card-head-field {
+    margin-bottom: var(--card-field-margin); /* Отступ между полями */
+    padding-bottom: var(--card-field-padding); /* Отступ разделителя */
+    border-bottom: var(--card-field-border); /* Разделитель между полями */
+}
+
+.card-head-field:last-of-type {
+    border-bottom: var(--card-field-border); /* Добавляем разделитель и у последнего поля */
+    margin-bottom: 0;
+}
+
+.field-label {
+    display: block;
+    font-size: var(--card-label-size); /* Размер шрифта лейбла */
+    font-weight: var(--card-label-weight); /* Вес шрифта лейбла */
+    color: var(--card-label-color); /* Цвет лейбла */
+    text-transform: uppercase; /* Заглавные буквы */
+    letter-spacing: var(--card-label-spacing); /* Межбуквенное расстояние лейбла */
+    margin-bottom: var(--card-label-margin); /* Отступ снизу от лейбла */
+}
+
+.field-value {
+    display: block;
+    font-size: var(--card-value-size); /* Размер шрифта значения */
+    font-weight: var(--card-value-weight); /* Вес шрифта значения */
+    color: var(--card-value-color); /* Цвет значения */
+    line-height: var(--card-value-line-height); /* Межстрочное расстояние значения */
+}
+
+.card-head-button {
+    margin-top: auto; /* Прижимаем кнопку к низу */
+    padding-top: var(--card-btn-margin); /* Отступ сверху от кнопки */
+    display: flex;
+    align-items: center; /* Выравнивание по центру */
+    gap: var(--card-btn-gap); /* Расстояние между кнопкой и текстом */
+}
+
+.btn-get-started {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--card-btn-size); /* Размер круглой кнопки */
+    height: var(--card-btn-size); /* Размер круглой кнопки */
+    background: var(--card-btn-bg); /* Фон кнопки */
+    color: var(--card-btn-color); /* Цвет иконки кнопки */
+    text-decoration: none;
+    border-radius: var(--card-btn-radius); /* Радиус кнопки */
+    transition: all 0.2s ease; /* Плавная анимация */
+}
+
+.btn-get-started:hover {
+    background: var(--card-btn-bg-hover); /* Фон кнопки при наведении */
+    transform: var(--card-btn-hover-transform); /* Трансформация при наведении */
+}
+
+.btn-icon {
+    font-size: var(--card-btn-icon-size); /* Размер иконки кнопки */
+    font-weight: var(--card-btn-icon-weight); /* Вес иконки кнопки */
+}
+
+.btn-text {
+    font-size: var(--card-btn-text-size); /* Размер текста кнопки */
+    font-weight: var(--card-btn-text-weight); /* Вес текста кнопки */
+    color: var(--card-btn-text-color); /* Цвет текста кнопки */
+    text-transform: uppercase; /* Заглавные буквы */
+    letter-spacing: var(--card-btn-text-spacing); /* Межбуквенное расстояние текста кнопки */
+}
+
+/* Адаптивность для мобильных устройств */
+
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .card-head-container {
+        flex-direction: column; /* Вертикальное расположение на мобильных */
+        gap: 15px; /* Уменьшенное расстояние между блоками */
+    }
+    
+    .card-head-media-block {
+        height: 250px; /* Фиксированная высота медиа-блока */
+        min-height: auto;
+    }
+    
+    .card-head-info-block {
+        flex: none; /* Убираем фиксированную ширину */
+        padding: 30px 20px; /* Уменьшенные отступы */
+    }
+}
+
+/* ==============================================
+    CARD HEAD 2 БЛОК
+============================================== */
+.card-head-2-container {
+    margin: 60px auto; /* Отступы сверху и снизу, центрирование */
+    max-width: 1270px; /* Такая же максимальная ширина как у .container */
+    width: 100%;
+    position: relative;
+    padding: 0 20px; /* Отступы по бокам */
+    height: 600px; /* Фиксированная высота контейнера */
+}
+
+/* Обертка для видео */
+.card-head-2-video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #1a1a1a; /* Фон на случай если видео не загрузится */
+}
+
+/* Основное видео */
+.card-head-2-main-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 2;
+    border-radius: 12px;
+}
+
+/* Размытый фон через псевдоэлемент */
+.card-head-2-video-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 120%;
+    background: linear-gradient(45deg, #333, #666, #333);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease-in-out infinite;
+    filter: blur(50px) brightness(0.8);
+    opacity: 0.6;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Адаптивность для Card Head 2 */
+@media (max-width: 768px) {
+    .card-head-2-container {
+        margin: 30px 0; /* Уменьшенные отступы на мобильных */
+        height: auto; /* Убираем фиксированную высоту для aspect-ratio */
+        padding: 0 15px; /* Меньше отступы по бокам */
+    }
+    
+    .card-head-2-video-wrapper::before {
+        width: 180%; /* Меньше размытие на мобильных */
+        height: 110%;
+        filter: blur(40px); /* Меньше размытие */
+    }
+    
+    .card-head-2-video-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9; /* Формат 16:9 для мобильных */
+        border-radius: 8px; /* Меньше закругление на мобильных */
+    }
+    
+    .card-head-2-main-video {
+        border-radius: 8px;
+    }
+}
+
+/* Ambient Light эффект */
+.card-head-2-ambient-light {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--ambient-light-width);
+    height: var(--ambient-light-height);
+    border-radius: 20px;
+    z-index: 1;
+    pointer-events: none;
+    transition: all var(--ambient-light-transition);
+    filter: blur(var(--ambient-light-blur));
+    opacity: 0;
+}
+
+/* Анимация появления ambient light */
+.card-head-2-ambient-light.active {
+    opacity: var(--ambient-light-opacity);
+    animation: ambientPulse var(--ambient-pulse-duration) ease-in-out infinite alternate;
+}
+
+@keyframes ambientPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: var(--ambient-pulse-min-opacity);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(var(--ambient-pulse-scale));
+        opacity: var(--ambient-pulse-max-opacity);
+    }
+}
+
+/* Адаптивность для ambient light */
+@media (max-width: 768px) {
+    .card-head-2-ambient-light {
+        width: var(--ambient-mobile-width);
+        height: var(--ambient-mobile-height);
+        filter: blur(var(--ambient-mobile-blur));
+    }
+}
+
+/* Информационная панель Card Head 2 */
+.card-head-2-info-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px 0;
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+}
+
+.info-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.info-link {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.info-link:hover {
+    color: #ff6b35;
+    text-decoration: underline;
+}
+
+/* Адаптивность для информационной панели */
+@media (max-width: 768px) {
+    .card-head-2-info-panel {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 0;
+    }
+    
+    .info-item {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        text-align: left;
+    }
+    
+    .info-label {
+        margin-bottom: 0;
+        margin-right: 10px;
+        min-width: 80px;
+    }
+    
+    .info-value {
+        font-size: 14px;
+    }
+}
+
+/* ==============================================
+    КНОПКА BACK TO TOP
+============================================== */
+.back-to-top-container {
+    display: flex;
+    justify-content: center;
+    margin: 60px 0 40px 0;
+    padding: 0 20px;
+}
+
+.back-to-top-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 34px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 12px 20px;
+    border-radius: 6px;
+}
+
+.back-to-top-btn:hover {
+    color: #ff6b35;
+    transform: translateY(-2px);
+}
+
+.back-to-top-text {
+    font-family: inherit;
+}
+
+.back-to-top-icon {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+}
+
+.back-to-top-btn:hover .back-to-top-icon {
+    filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(15deg);
+}
+
+/* Адаптивность для кнопки BACK TO TOP */
+@media (max-width: 768px) {
+    .back-to-top-container {
+        margin: 40px 0 30px 0;
+        padding: 0 15px;
+    }
+    
+    .back-to-top-btn {
+        font-size: 12px;
+        gap: 8px;
+        padding: 10px 16px;
+    }
+    
+    .back-to-top-icon {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* ==============================================
+    КОНТАКТНЫЙ ВИДЖЕТ
+============================================== */
+
+.contact-widget {
+    position: fixed;
+    z-index: 1000;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 15px;
+    pointer-events: none; /* Контейнер не блокирует клики */
+}
+
+.contact-widget--bottom-left {
+    right: auto;
+    left: 20px;
+    align-items: flex-start;
+}
+
+/* Панель социальных сетей */
+.contact-widget__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--filter-glass-bg);
+    backdrop-filter: blur(var(--filter-glass-blur)) saturate(var(--filter-glass-saturate));
+    border: 1px solid var(--filter-border-color);
+    border-radius: 20px;
+    box-shadow: var(--filter-glass-shadow);
+    opacity: 0;
+    visibility: hidden;
+    min-width: 60px;
+    pointer-events: auto; /* Панель может получать клики */
+}
+
+.contact-widget__panel--active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Ссылки на социальные сети */
+.contact-widget__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--filter-btn-bg);
+    border: 1px solid var(--filter-btn-border);
+    transition: all 0.2s ease;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto; /* Ссылки могут получать клики */
+    flex-shrink: 0; /* Предотвращает сжатие иконок */
+}
+
+.contact-widget__link:hover {
+    background: var(--filter-btn-bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.contact-widget__link:active {
+    transform: translateY(0);
+}
+
+/* Иконки социальных сетей */
+.contact-widget__icon {
+    width: 29px;
+    height: 29px;
+    filter: brightness(0) invert(1);
+    transition: all 0.2s ease;
+}
+
+.contact-widget__link:hover .contact-widget__icon {
+    filter: brightness(0) invert(1);
+}
+
+/* Основная кнопка */
+.contact-widget__toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--filter-glass-bg);
+    backdrop-filter: blur(var(--filter-glass-blur)) saturate(var(--filter-glass-saturate));
+    border: 1px solid var(--filter-border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--filter-glass-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto; /* Кнопка может получать клики */
+}
+
+.contact-widget__toggle:hover {
+    transform: translateY(-3px);
+    background: var(--filter-btn-bg-hover);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+}
+
+.contact-widget__toggle:active {
+    transform: translateY(-1px);
+}
+
+.contact-widget__toggle--active {
+    transform: rotate(45deg);
+    background: var(--filter-btn-bg-hover);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.contact-widget__toggle--active:hover {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
+}
+
+/* Иконка основной кнопки */
+.contact-widget__toggle-icon {
+    width: 28px;
+    height: 28px;
+    filter: brightness(0) invert(1);
+    transition: all 0.3s ease;
+}
+
+/* Индикация привлечения внимания каждые 10 секунд */
+.contact-widget__toggle {
+    animation: buttonAttention 10s infinite;
+}
+
+@keyframes buttonAttention {
+    0%, 90% {
+        background: var(--filter-glass-bg);
+        border-color: var(--filter-border-color);
+        box-shadow: var(--filter-glass-shadow);
+    }
+    92% {
+        background: rgba(255, 107, 107, 0.8);
+        border-color: rgba(255, 107, 107, 0.9);
+        box-shadow: 0 4px 20px rgba(255, 107, 107, 0.6);
+    }
+    94% {
+        background: rgba(255, 107, 107, 0.9);
+        border-color: rgba(255, 107, 107, 1);
+        box-shadow: 0 6px 25px rgba(255, 107, 107, 0.8);
+    }
+    96% {
+        background: rgba(255, 107, 107, 0.7);
+        border-color: rgba(255, 107, 107, 0.8);
+        box-shadow: 0 4px 20px rgba(255, 107, 107, 0.5);
+    }
+    100% {
+        background: var(--filter-glass-bg);
+        border-color: var(--filter-border-color);
+        box-shadow: var(--filter-glass-shadow);
+    }
+}
+
+/* Анимация иконки самолетика */
+.contact-widget__toggle-icon {
+    animation: iconFly 10s infinite;
+}
+
+@keyframes iconFly {
+    0%, 90% {
+        transform: translateX(0);
+        filter: brightness(0) invert(1);
+    }
+    92% {
+        transform: translateX(-3px);
+        filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    }
+    94% {
+        transform: translateX(3px);
+        filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(255, 255, 255, 1));
+    }
+    96% {
+        transform: translateX(-2px);
+        filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    }
+    98% {
+        transform: translateX(2px);
+        filter: brightness(0) invert(1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+    }
+    100% {
+        transform: translateX(0);
+        filter: brightness(0) invert(1);
+    }
+}
+
+/* Остановка анимации при hover и активном состоянии */
+.contact-widget__toggle:hover {
+    animation-play-state: paused;
+}
+
+.contact-widget__toggle:hover .contact-widget__toggle-icon {
+    animation-play-state: paused;
+}
+
+.contact-widget__toggle--active {
+    animation-play-state: paused;
+}
+
+.contact-widget__toggle--active .contact-widget__toggle-icon {
+    animation-play-state: paused;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .contact-widget {
+        bottom: 15px;
+        right: 15px;
+        gap: 12px;
+        flex-direction: row;
+    }
+    
+    .contact-widget--bottom-left {
+        right: auto;
+        left: 15px;
+    }
+    
+    .contact-widget__toggle {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .contact-widget__toggle-icon {
+        width: 26px;
+        height: 26px;
+    }
+    
+    .contact-widget__panel {
+        padding: 12px;
+        gap: 10px;
+        min-width: 56px;
+    }
+    
+    .contact-widget__link {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .contact-widget__icon {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+/* Скрытие виджета на очень маленьких экранах */
+@media (max-width: 480px) {
+    .contact-widget {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .contact-widget--bottom-left {
+        right: auto;
+        left: 10px;
+    }
+}
+
+
+

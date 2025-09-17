@@ -1,0 +1,120 @@
+{% load static wagtailcore_tags wagtailuserbar %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        {# === ЗАМЕНИТЕ ЭТОТ БЛОК TITLE === #}
+    <title>{% block title %}{% if current_category and current_category.seo_title %}{{ current_category.seo_title }}{% elif page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}{% endblock %}</title>
+    
+    {# === ЗАМЕНИТЕ ЭТОТ БЛОК META DESCRIPTION === #}
+    <meta name="description" content="{% if current_category and current_category.search_description %}{{ current_category.search_description }}{% elif page.search_description %}{{ page.search_description }}{% endif %}" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    {# Подключение шрифта Mona Sans #}
+    <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/menu.css' %}">
+    {% block extra_css %}{% endblock %}
+
+    </head>
+
+    <body class="{% block body_class %}{% endblock %}">
+        
+        {% wagtailuserbar %}
+
+        {# ===================== КНОПКА МЕНЮ ===================== #}
+        <div class="menu-button-container">
+            <button id="menuButton" class="menu-button" type="button" aria-label="Open menu">
+                <img src="{% static 'icons/menu.svg' %}" alt="Menu" class="menu-icon">
+            </button>
+        </div>
+
+        {# ===================== МЕНЮ ===================== #}
+        <div id="menuOverlay" class="menu-overlay" aria-hidden="true">
+            <div class="menu-content">
+                <button id="menuClose" class="menu-close" type="button" aria-label="Close menu">✕</button>
+                <nav class="menu-nav">
+                    <h2 class="menu-title">Information</h2>
+                    <ul class="menu-list">
+                        {% for info_page in info_pages %}
+                            <li class="menu-item">
+                                <a href="{% pageurl info_page %}" class="menu-link">{{ info_page.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        {% block full_width_content %}{% endblock %}
+
+        {% block content %}{% endblock %}
+
+        {# ===================================================== #}
+        {# === НОВЫЙ БЛОК ДЛЯ JAVASCRIPT-ФАЙЛОВ === #}
+        {# ===================================================== #}
+        {% block extra_js %}
+    {# 1. Подключаем библиотеки GSAP с CDN #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    {# 2. Подключаем наш собственный файл с кодом анимации #}
+    <script src="{% static 'js/app.js' %}"></script>
+    
+    {# 3. JavaScript для меню #}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuButton = document.getElementById('menuButton');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuClose = document.getElementById('menuClose');
+        
+        // Открытие меню
+        menuButton.addEventListener('click', function() {
+            menuOverlay.classList.add('active');
+            menuOverlay.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // Закрытие меню
+        function closeMenu() {
+            menuOverlay.classList.remove('active');
+            menuOverlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+        
+        menuClose.addEventListener('click', closeMenu);
+        
+        // Закрытие по клику на оверлей
+        menuOverlay.addEventListener('click', function(e) {
+            if (e.target === menuOverlay) {
+                closeMenu();
+            }
+        });
+        
+        // Закрытие по Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && menuOverlay.classList.contains('active')) {
+                closeMenu();
+            }
+        });
+    });
+    </script>
+{% endblock %}
+        
+        {# ===================== МОДАЛЬНОЕ ВИДЕО ===================== #}
+        <div id="videoModal" class="video-modal" role="dialog" aria-modal="true" aria-hidden="true">
+            <div class="video-modal__backdrop" data-close-modal></div>
+            <div class="video-modal__dialog">
+                <button id="videoModalClose" class="video-modal__close" type="button" aria-label="Close" data-close-modal>✕</button>
+                <video id="videoModalPlayer" class="video-modal__player" controls playsinline preload="metadata"></video>
+            </div>
+        </div>
+        
+        {# ===================== КОНТАКТНЫЙ ВИДЖЕТ ===================== #}
+        {% include 'contacts/contact_widget.html' %}
+        
+    </body>
+</html>

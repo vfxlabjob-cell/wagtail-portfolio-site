@@ -1,0 +1,11 @@
+{% load wagtailimages_tags %}
+
+{# Мы применяем класс .stream-gallery к этой обертке #}
+<div class="stream-gallery">
+    {# Перебираем все изображения, которые редактор добавил в список #}
+    {% for image in value %}
+        <figure class="gallery-image">
+            {% image image fill-800x800 %}
+        </figure>
+    {% endfor %}
+</div>

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags static %}
+
+{# Уникальный класс для этой страницы #}
+{% block body_class %}template-project-page{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {# --- СТАНДАРТНЫЙ ЦИКЛ ДЛЯ ВЫВОДА STREAMFIELD (кроме Card Head 2) --- #}
+        {% for block in page.body %}
+            {% if block.block_type != 'card_head_2' %}
+                {% include_block block %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {# --- КНОПКА BACK TO TOP --- #}
+    <div class="back-to-top-container">
+        <button class="back-to-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Back to top">
+            <span class="back-to-top-text">BACK TO TOP</span>
+            <img src="{% static 'icons/arrow-up.svg' %}" alt="" class="back-to-top-icon">
+        </button>
+    </div>
+
+    <script>
+        // Автоматически обновляем заголовок страницы из первого Card Head блока
+        document.addEventListener('DOMContentLoaded', function() {
+            const cardHeadBlock = document.querySelector('.card-head-container');
+            if (cardHeadBlock) {
+                const projectNameElement = cardHeadBlock.querySelector('.field-value');
+                if (projectNameElement) {
+                    const projectName = projectNameElement.textContent.trim();
+                    
+                    // Обновляем заголовок страницы
+                    const projectHeading = document.getElementById('project-heading');
+                    if (projectHeading) {
+                        projectHeading.textContent = projectName;
+                    }
+                }
+            }
+        });
+    </script>
+
+{% endblock %}
+
+{% block full_width_content %}
+    <div class="project-header">
+        {# --- КНОПКА НАЗАД --- #}
+        <div class="back-button">
+            <a href="javascript:history.back()" class="back-btn">
+                <img src="{% static 'icons/cancel.svg' %}" alt="Назад" class="back-icon">
+            </a>
+        </div>
+
+        <h1 id="project-heading">{{ page.title }}</h1>
+    </div>
+
+    {# --- CARD HEAD 2 БЛОКИ (ВНЕ КОНТЕЙНЕРА) --- #}
+    {% for block in page.body %}
+        {% if block.block_type == 'card_head_2' %}
+            {% include_block block %}
+        {% endif %}
+    {% endfor %}
+{% endblock %}

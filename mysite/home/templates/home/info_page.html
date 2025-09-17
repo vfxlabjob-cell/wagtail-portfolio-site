@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block body_class %}template-info-page{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="info-page-header">
+            <h1>{{ page.title }}</h1>
+            <div class="breadcrumb">
+                <a href="{% pageurl page.get_parent %}">← Back to Information</a>
+            </div>
+        </div>
+        
+        <div class="info-page-content">
+            {% if page.body %}
+                {{ page.body|richtext }}
+            {% else %}
+                <p>Content will be added soon.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.info-page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.info-page-header h1 {
+    margin: 0 0 1rem 0;
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.breadcrumb {
+    margin-top: 1rem;
+}
+
+.breadcrumb a {
+    color: #cccccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    color: #ffffff;
+}
+
+.info-page-content {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.7;
+    color: #ffffff;
+}
+
+.info-page-content h2 {
+    color: #ffffff;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.info-page-content h3 {
+    color: #ffffff;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.info-page-content p {
+    margin-bottom: 1rem;
+}
+
+.info-page-content ul,
+.info-page-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.info-page-content li {
+    margin-bottom: 0.5rem;
+}
+
+.info-page-content blockquote {
+    border-left: 4px solid #666;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #cccccc;
+}
+
+.info-page-content strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.info-page-content a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.info-page-content a:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}

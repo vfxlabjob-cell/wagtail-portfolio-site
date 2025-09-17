@@ -1,0 +1,33 @@
+{% load static %}
+
+<!-- Контактный виджет -->
+<div id="contactWidget" class="contact-widget contact-widget--bottom-right">
+    
+    <!-- Панель социальных сетей -->
+    <div id="socialPanel" class="contact-widget__panel">
+        {% for social in social_links %}
+            {% if social.is_active %}
+                <a href="{{ social.url }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="contact-widget__link"
+                   title="{{ social.name }}">
+                    <img src="{{ social.icon.url }}" 
+                         alt="{{ social.name }}" 
+                         class="contact-widget__icon">
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+    <!-- Основная кнопка -->
+    <button id="contactToggle" 
+            class="contact-widget__toggle"
+            aria-label="Открыть контакты"
+            aria-expanded="false">
+        <img src="{% static 'contact/send.svg' %}" 
+             alt="Контактная кнопка" 
+             class="contact-widget__toggle-icon">
+    </button>
+    
+</div>

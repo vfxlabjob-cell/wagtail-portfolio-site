@@ -1,0 +1,9 @@
+<figure class="stream-video">
+    <video loop muted autoplay>
+        <source src="{{ value.video.file.url }}" type="video/mp4">
+        Ваш браузер не поддерживает тег video.
+    </video>
+    {% if value.caption %}
+        <figcaption>{{ value.caption }}</figcaption>
+    {% endif %}
+</figure>

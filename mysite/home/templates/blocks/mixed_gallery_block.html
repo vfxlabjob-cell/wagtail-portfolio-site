@@ -1,0 +1,20 @@
+{% load wagtailimages_tags %}
+
+{# Мы применяем класс .stream-gallery к этой обертке #}
+<div class="stream-gallery">
+    {# Перебираем все элементы галереи #}
+    {% for block in value %}
+        <figure class="gallery-item">
+            {% if block.block_type == 'image' %}
+                {# Отображаем изображение #}
+                {% image block.value fill-800x800 %}
+            {% elif block.block_type == 'video' %}
+                {# Отображаем видео #}
+                <video loop muted autoplay>
+                    <source src="{{ block.value.file.url }}" type="video/mp4">
+                    Ваш браузер не поддерживает тег video.
+                </video>
+            {% endif %}
+        </figure>
+    {% endfor %}
+</div>

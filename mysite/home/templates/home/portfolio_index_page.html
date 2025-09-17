@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{# ЭТОТ БЛОК ДОЛЖЕН БЫТЬ ТОЛЬКО ОДИН РАЗ #}
+{% block body_class %}template-index-page{% endblock %}
+
+{% block full_width_content %}
+    <div class="container">
+        {# Динамический заголовок - либо main_text категории, либо стандартный title #}
+        {% if display_main_text %}
+            <h1>{{ display_main_text|striptags }}</h1>
+        {% else %}
+            <h1>{{ page.title }}</h1>
+        {% endif %}
+        
+        {# Динамический второстепенный текст #}
+        {% if display_secondary_text %}
+            <div class="secondary-intro">
+                {{ display_secondary_text|richtext }}
+            </div>
+        {% endif %}
+    </div>
+    
+    {# --- ФИЛЬТР ТЕПЕРЬ ЗДЕСЬ, ВНЕШНЕЙ ОБЕРТКЕ --- #}
+    <div class="filter-container">
+        <div class="filter-controls">
+            {# Ссылка для отображения всех проектов #}
+            <a href="{% pageurl page %}" 
+               class="filter-btn {% if not current_category_slug %}active{% endif %}" 
+               data-filter="all">
+               All
+            </a>
+            {# Перебираем все категории, переданные из модели #}
+            {% for category in categories %}
+                <a href="{% pageurl page %}?category={{ category.slug }}" 
+                   class="filter-btn {% if category.slug == current_category_slug %}active{% endif %}" 
+                   data-filter="{{ category.slug }}">
+                   {{ category.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="portfolio-grid-full-width">
+        {% for project in child_pages %}
+            <a href="{% pageurl project %}"
+               class="portfolio-card"
+               data-category="{{ project.category.slug|default:'none' }}">
+                <div class="card-image-wrapper">
+                    {% if project.thumbnail_image %}
+                        {% image project.thumbnail_image fill-400x500 as card_image_desktop %}
+                        {% image project.thumbnail_image fill-400x400 as card_image_mobile %}
+                        <picture>
+                            <source media="(max-width: 767px)" srcset="{{ card_image_mobile.url }}">
+                            <img src="{{ card_image_desktop.url }}" alt="{{ card_image_desktop.alt }}" class="card-image">
+                        </picture>
+                    {% else %}
+                        <div class="card-image card-placeholder"></div>
+                    {% endif %}
+                    <div class="card-overlay">
+                        {% with project.get_thumbnail_video as thumbnail_video %}
+                        {% if thumbnail_video %}
+                        <button class="overlay-btn overlay-btn--play js-play" type="button" data-video-url="{{ thumbnail_video.file.url }}" aria-label="Play video" title="Play">
+                            <img class="overlay-icon" src="{% static 'icons/play.svg' %}" alt="">
+                        </button>
+                        {% endif %}
+                        {% endwith %}
+                        <div class="overlay-btn overlay-btn--open" aria-hidden="true">
+                            <img class="overlay-icon" src="{% static 'icons/arrow-out.svg' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    {# Пустой блок - весь контент перенесен в full_width_content #}
+{% endblock %}

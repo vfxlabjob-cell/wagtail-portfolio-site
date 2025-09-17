@@ -1,0 +1,15 @@
+{% load wagtailcore_tags %}
+
+<div class="add-text-container add-text-{{ value.text_align }}">
+    {% if value.heading %}
+        <div class="add-text-heading">
+            {{ value.heading|richtext }}
+        </div>
+    {% endif %}
+    
+    {% if value.paragraph %}
+        <div class="add-text-paragraph">
+            {{ value.paragraph|richtext }}
+        </div>
+    {% endif %}
+</div>
