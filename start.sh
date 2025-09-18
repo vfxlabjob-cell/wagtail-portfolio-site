@@ -2,45 +2,31 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-# Change to the mysite directory
+# Change to the mysite directory where manage.py is located
 cd mysite
 
 # Apply database migrations
 echo "Applying database migrations..."
-python manage.py migrate --noinput --settings=mysite.settings.no_csrf
+python manage.py migrate --noinput --settings=mysite.settings.production
 
-# Create superuser if not exists
+# Create superuser if not exists (reads from environment variables)
 echo "Creating superuser..."
-python manage.py create_superuser --settings=mysite.settings.no_csrf
-
-# Clear corrupted sessions
-echo "Clearing corrupted sessions..."
-python manage.py clear_sessions --settings=mysite.settings.no_csrf
-
-# Diagnose site
-echo "Diagnosing site..."
-python manage.py diagnose_site --settings=mysite.settings.no_csrf
-
-# Check media files and R2 connection
-echo "Checking media files and R2 connection..."
-python manage.py check_media --settings=mysite.settings.no_csrf
-
-# Import real site data
-echo "Importing real site data..."
-python manage.py import_site_data --settings=mysite.settings.no_csrf
-
-# Fix site root to point to the correct homepage
-echo "Fixing site root page..."
-python manage.py fix_site_root --settings=mysite.settings.no_csrf
-
-# Publish existing pages
-echo "Publishing existing pages..."
-python manage.py publish_pages --settings=mysite.settings.no_csrf
+python manage.py create_superuser --settings=mysite.settings.production
 
 # Collect static files
 echo "Collecting static files..."
-python manage.py collectstatic --noinput --settings=mysite.settings.no_csrf
+python manage.py collectstatic --noinput --settings=mysite.settings.production
 
-# Start the Gunicorn server
+# Conditionally import data and fix the site root
+if [ "$RUN_IMPORT" = "True" ]; then
+    echo ">>> RUNNING DATA IMPORT"
+    python manage.py import_site_data --settings=mysite.settings.production
+    echo ">>> FIXING SITE ROOT"
+    python manage.py fix_site_root --settings=mysite.settings.production
+else
+    echo ">>> SKIPPING DATA IMPORT"
+fi
+
+# Start the Gunicorn server for production
 echo "Starting Gunicorn server..."
-exec gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120 --settings=mysite.settings.no_csrf
+exec gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120 --settings=mysite.settings.production
