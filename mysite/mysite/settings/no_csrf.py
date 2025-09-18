@@ -63,6 +63,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 # Настройки сессий для исправления "Session data corrupted"
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_NAME = 'wagtail_sessionid'
+SESSION_COOKIE_SAMESITE = 'Lax'
 
 # Настройки базы данных
 import dj_database_url

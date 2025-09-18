@@ -13,6 +13,10 @@ python manage.py migrate --noinput --settings=mysite.settings.no_csrf
 echo "Creating superuser..."
 python manage.py create_superuser --settings=mysite.settings.no_csrf
 
+# Clear corrupted sessions
+echo "Clearing corrupted sessions..."
+python manage.py clear_sessions --settings=mysite.settings.no_csrf
+
 # Collect static files
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --settings=mysite.settings.no_csrf
