@@ -58,11 +58,26 @@ AWS_DEFAULT_ACL = None
 # Используем DATABASE_URL от Railway
 import dj_database_url
 
-DATABASES = {
-    'default': dj_database_url.parse(
-        os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/wagtail_site')
-    )
-}
+# Получаем DATABASE_URL от Railway
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # Используем Railway DATABASE_URL
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
+    }
+else:
+    # Fallback для локальной разработки
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('PGDATABASE', 'wagtail_site'),
+            'USER': os.environ.get('PGUSER', 'postgres'),
+            'PASSWORD': os.environ.get('PGPASSWORD', ''),
+            'HOST': os.environ.get('PGHOST', 'localhost'),
+            'PORT': os.environ.get('PGPORT', '5432'),
+        }
+    }
 
 # Настройки email для продакшена
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
