@@ -9,10 +9,6 @@ cd mysite
 echo "Applying database migrations..."
 python manage.py migrate --noinput --settings=mysite.settings.production
 
-# Create superuser if not exists (reads from environment variables)
-echo "Creating superuser..."
-python manage.py create_superuser --settings=mysite.settings.production
-
 # Collect static files
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --settings=mysite.settings.production
