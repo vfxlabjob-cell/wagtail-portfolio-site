@@ -17,15 +17,6 @@ CSRF_TRUSTED_ORIGINS = [
     f"https://{host}" for host in ALLOWED_HOSTS if host not in ['localhost', '127.0.0.1']
 ]
 
-# Временно отключаем CSRF для отладки
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = False
-CSRF_USE_SESSIONS = False
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SAMESITE = None
-CSRF_FAILURE_VIEW = None
-
 # Включаем CSRF middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
