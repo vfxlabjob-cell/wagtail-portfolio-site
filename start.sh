@@ -1,13 +1,18 @@
 #!/bin/bash
+# Exit immediately if a command exits with a non-zero status.
+set -e
 
-# Переходим в папку с Django проектом
+# Change to the mysite directory
 cd mysite
 
-# Выполняем миграции
-python manage.py migrate
+# Apply database migrations
+echo "Applying database migrations..."
+python manage.py migrate --noinput
 
-# Собираем статические файлы
+# Collect static files
+echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Запускаем Gunicorn сервер
+# Start the Gunicorn server
+echo "Starting Gunicorn server..."
 exec gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120
