@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Page</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <style>
+        body { background: red; color: white; font-size: 24px; padding: 20px; }
+        .test { border: 2px solid yellow; padding: 10px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>DEBUG PAGE</h1>
+    <div class="test">
+        <p>Static URL: {% static 'css/styles.css' %}</p>
+        <p>If you see this with red background and yellow border - Django works!</p>
+        <p>If you see styles from styles.css - static files work!</p>
+    </div>
+    <p>Current time: {% now "Y-m-d H:i:s" %}</p>
+</body>
+</html>

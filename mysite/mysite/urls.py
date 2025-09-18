@@ -10,12 +10,18 @@ from search import views as search_views
 
 # Импортируем только то, что нужно для МЕДИА-файлов
 from django.conf.urls.static import static
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+
+def debug_view(request):
+    return HttpResponse(render_to_string('debug.html'))
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search_views.search, name="search"),
+    path("debug/", debug_view, name="debug"),
 ]
 
 # === ЭТОТ БЛОК МЫ ОСТАВЛЯЕМ, ОН ОТВЕЧАЕТ ЗА КАРТИНКИ ===
