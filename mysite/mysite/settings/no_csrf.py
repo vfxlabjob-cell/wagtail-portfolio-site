@@ -55,6 +55,13 @@ X_FRAME_OPTIONS = 'DENY'
 # Настройки cookies (отключены)
 SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 1209600  # 2 недели
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Настройки сессий для исправления "Session data corrupted"
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Настройки базы данных
 import dj_database_url
@@ -67,6 +74,17 @@ DATABASES = {
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+# Настройки для поиска статических файлов
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# Настройки для статических файлов в продакшене
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 # Настройки медиа файлов
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
