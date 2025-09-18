@@ -3,7 +3,7 @@ import os
 import secrets
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Временно включаем для диагностики
+DEBUG = False  # Отключаем для продакшена
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(50))
@@ -87,7 +87,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_S3_FILE_OVERWRITE = False
 
-# Логирование
+# Логирование - минимизируем для Railway
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -98,12 +98,22 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'DEBUG',
+        'level': 'WARNING',  # Только предупреждения и ошибки
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'WARNING',  # Только предупреждения и ошибки
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'ERROR',  # Только ошибки БД
+            'propagate': False,
+        },
+        'django.template': {
+            'handlers': ['console'],
+            'level': 'ERROR',  # Только ошибки шаблонов
             'propagate': False,
         },
     },
