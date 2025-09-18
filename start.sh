@@ -21,6 +21,10 @@ python manage.py clear_sessions --settings=mysite.settings.no_csrf
 echo "Diagnosing site..."
 python manage.py diagnose_site --settings=mysite.settings.no_csrf
 
+# Check media files and R2 connection
+echo "Checking media files and R2 connection..."
+python manage.py check_media --settings=mysite.settings.no_csrf
+
 # Import real site data
 echo "Importing real site data..."
 python manage.py import_site_data --settings=mysite.settings.no_csrf
