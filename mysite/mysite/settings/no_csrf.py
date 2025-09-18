@@ -35,6 +35,34 @@ CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
 CSRF_TOKEN_GET_PARAM = 'csrfmiddlewaretoken'
 CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 
+# Дополнительные настройки для полного отключения CSRF
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-c60254.up.railway.app',
+    'https://web-production-c60254.up.railway.app/',
+    'https://*.up.railway.app',
+    'https://*.up.railway.app/',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
+# Отключаем CSRF для всех представлений
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_DOMAIN = None
+CSRF_COOKIE_PATH = '/'
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Дополнительные настройки для отключения CSRF
+CSRF_COOKIE_AGE = None
+CSRF_COOKIE_DOMAIN = None
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_PATH = '/'
+CSRF_COOKIE_SAMESITE = None
+CSRF_COOKIE_SECURE = False
+CSRF_USE_SESSIONS = False
+
 # MIDDLEWARE БЕЗ CSRF
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
