@@ -15,7 +15,9 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,web-product
 # CSRF настройки для Railway
 CSRF_TRUSTED_ORIGINS = [
     'https://web-production-c60254.up.railway.app',
+    'https://web-production-c60254.up.railway.app/',
     'https://*.up.railway.app',
+    'https://*.up.railway.app/',
 ]
 
 # Временно отключаем CSRF для отладки

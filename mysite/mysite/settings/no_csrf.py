@@ -11,11 +11,25 @@ SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(50))
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ['*']  # Разрешаем все хосты
 
+# CSRF настройки для Railway (даже если отключен)
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-c60254.up.railway.app',
+    'https://web-production-c60254.up.railway.app/',
+    'https://*.up.railway.app',
+    'https://*.up.railway.app/',
+]
+
 # Полностью отключаем CSRF
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_SAMESITE = None
+CSRF_COOKIE_DOMAIN = None
+CSRF_COOKIE_PATH = '/'
+CSRF_COOKIE_AGE = 31449600
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+CSRF_TOKEN_GET_PARAM = 'csrfmiddlewaretoken'
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 
 # MIDDLEWARE БЕЗ CSRF
 MIDDLEWARE = [
