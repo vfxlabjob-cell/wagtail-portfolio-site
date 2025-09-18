@@ -21,9 +21,9 @@ python manage.py clear_sessions --settings=mysite.settings.no_csrf
 echo "Diagnosing site..."
 python manage.py diagnose_site --settings=mysite.settings.no_csrf
 
-# Create site content
-echo "Creating site content..."
-python manage.py create_site_content --settings=mysite.settings.no_csrf
+# Import real site data
+echo "Importing real site data..."
+python manage.py import_site_data --settings=mysite.settings.no_csrf
 
 # Publish existing pages
 echo "Publishing existing pages..."
