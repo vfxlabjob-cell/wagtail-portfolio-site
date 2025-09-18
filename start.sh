@@ -9,5 +9,5 @@ python manage.py migrate
 # Собираем статические файлы
 python manage.py collectstatic --noinput
 
-# Запускаем сервер
-python manage.py runserver 0.0.0.0:$PORT --settings=mysite.settings.production
+# Запускаем Gunicorn сервер
+exec gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120
