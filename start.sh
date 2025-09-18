@@ -9,6 +9,10 @@ cd mysite
 echo "Applying database migrations..."
 python manage.py migrate --noinput
 
+# Create superuser if not exists
+echo "Creating superuser..."
+python manage.py create_superuser
+
 # Collect static files
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
