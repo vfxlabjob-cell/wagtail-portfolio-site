@@ -55,16 +55,13 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 
 # Настройки базы данных для продакшена
-# PostgreSQL (рекомендуется для продакшена)
+# Используем DATABASE_URL от Railway
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'wagtail_site'),
-        'USER': os.environ.get('DB_USER', os.environ.get('USER', 'bogdan')),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
-    }
+    'default': dj_database_url.parse(
+        os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/wagtail_site')
+    )
 }
 
 # Настройки email для продакшена
