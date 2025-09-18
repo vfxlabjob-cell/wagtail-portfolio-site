@@ -17,8 +17,9 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,web-product
 CSRF_TRUSTED_ORIGINS = [
     f"https://{host}" for host in ALLOWED_HOSTS if host not in ['localhost', '127.0.0.1']
 ]
-# For debugging health checks, temporarily allow all origins
-CSRF_TRUSTED_ORIGINS.append("*")
+# For Railway deployment, trust all subdomains of railway.app
+CSRF_TRUSTED_ORIGINS.append("https://*.up.railway.app")
+
 
 # Включаем CSRF middleware
 MIDDLEWARE = [
