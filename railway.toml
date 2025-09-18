@@ -2,8 +2,8 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "python manage.py migrate --settings=mysite.settings.production && python manage.py collectstatic --no-input --settings=mysite.settings.production && if [ \"$RUN_IMPORT\" = \"True\" ]; then echo '>>> RUNNING DATA IMPORT' && python manage.py import_site_data --settings=mysite.settings.production && python manage.py fix_site_root --settings=mysite.settings.production; else echo '>>> SKIPPING DATA IMPORT'; fi && gunicorn mysite.wsgi:application"
-healthcheckPath = "/__health__/"
+startCommand = "python manage.py migrate --settings=mysite.settings.production && python manage.py collectstatic --no-input --settings=mysite.settings.production && if [ \"$RUN_IMPORT\" = \"True\" ]; then echo '>>> RUNNING DATA IMPORT' && python manage.py import_site_data --settings=mysite.settings.production && python manage.py fix_site_root --settings=mysite.settings.production; else echo '>>> SKIPPING DATA IMPORT'; fi && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT"
+healthcheckPath = "/"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
