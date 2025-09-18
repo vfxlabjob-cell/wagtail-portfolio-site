@@ -7,16 +7,16 @@ cd mysite
 
 # Apply database migrations
 echo "Applying database migrations..."
-python manage.py migrate --noinput
+python manage.py migrate --noinput --settings=mysite.settings.no_csrf
 
 # Create superuser if not exists
 echo "Creating superuser..."
-python manage.py create_superuser
+python manage.py create_superuser --settings=mysite.settings.no_csrf
 
 # Collect static files
 echo "Collecting static files..."
-python manage.py collectstatic --noinput
+python manage.py collectstatic --noinput --settings=mysite.settings.no_csrf
 
 # Start the Gunicorn server
 echo "Starting Gunicorn server..."
-exec gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120
+exec gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120 --settings=mysite.settings.no_csrf
