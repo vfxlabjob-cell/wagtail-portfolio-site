@@ -58,11 +58,32 @@ AWS_DEFAULT_ACL = None
 # Используем DATABASE_URL от Railway
 import dj_database_url
 
-DATABASES = {
-    'default': dj_database_url.parse(
-        os.environ.get('DATABASE_URL', 'postgresql://postgres:password@localhost:5432/railway')
-    )
-}
+# Отладка переменных окружения
+print("=== ENVIRONMENT VARIABLES DEBUG ===")
+print(f"DATABASE_URL: {os.environ.get('DATABASE_URL', 'NOT SET')}")
+print(f"All env vars with 'DATABASE': {[k for k in os.environ.keys() if 'DATABASE' in k]}")
+print(f"All env vars with 'PG': {[k for k in os.environ.keys() if k.startswith('PG')]}")
+print("===================================")
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    print(f"Using DATABASE_URL: {DATABASE_URL[:50]}...")
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
+    }
+else:
+    print("DATABASE_URL not found, using fallback")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'railway',
+            'USER': 'postgres',
+            'PASSWORD': 'password',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 # Настройки email для продакшена
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
