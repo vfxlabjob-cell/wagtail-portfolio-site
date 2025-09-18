@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "wagtail.admin",
     "wagtail",
     
-    "wagtail_modeladmin",  # <-- ВОТ ЭТА СТРОКА ДОЛЖНА БЫТЬ ДОБАВЛЕНА
+    "wagtail.contrib.modeladmin",
     
     "modelcluster",
     "taggit",
