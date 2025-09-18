@@ -8,14 +8,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             # Удаляем все сессии
-            deleted_count = Session.objects.all().delete()[0]
+            result = Session.objects.all().delete()
+            deleted_count = result[0] if result else 0
             self.stdout.write(
                 self.style.SUCCESS(f'Successfully deleted {deleted_count} sessions')
             )
             
             # Очищаем устаревшие сессии
             expired_sessions = Session.objects.filter(expire_date__lt=timezone.now())
-            expired_count = expired_sessions.delete()[0]
+            expired_result = expired_sessions.delete()
+            expired_count = expired_result[0] if expired_result else 0
             self.stdout.write(
                 self.style.SUCCESS(f'Successfully deleted {expired_count} expired sessions')
             )

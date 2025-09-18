@@ -17,6 +17,10 @@ python manage.py create_superuser --settings=mysite.settings.no_csrf
 echo "Clearing corrupted sessions..."
 python manage.py clear_sessions --settings=mysite.settings.no_csrf
 
+# Diagnose site
+echo "Diagnosing site..."
+python manage.py diagnose_site --settings=mysite.settings.no_csrf
+
 # Publish existing pages
 echo "Publishing existing pages..."
 python manage.py publish_pages --settings=mysite.settings.no_csrf

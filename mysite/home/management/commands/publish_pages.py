@@ -11,6 +11,7 @@ class Command(BaseCommand):
             
             # Публикуем все страницы, которые не live
             unpublished_pages = Page.objects.filter(live=False)
+            self.stdout.write(f"Found {unpublished_pages.count()} unpublished pages")
             
             for page in unpublished_pages:
                 try:
