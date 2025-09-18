@@ -12,6 +12,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(50))
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,web-production-c60254.up.railway.app,*.up.railway.app').split(',')
 
+# CSRF настройки для Railway
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-c60254.up.railway.app',
+    'https://*.up.railway.app',
+]
+
 # Настройки безопасности для продакшена (отключены для Railway)
 # Railway обрабатывает SSL на уровне прокси
 SECURE_SSL_REDIRECT = False
@@ -63,6 +69,9 @@ DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/wagta
 DATABASES = {
     'default': dj_database_url.parse(DATABASE_URL)
 }
+
+# Автоматическое создание страниц при первом запуске
+AUTO_CREATE_PAGES = os.environ.get('AUTO_CREATE_PAGES', 'True').lower() == 'true'
 
 # Логирование для диагностики
 LOGGING = {
