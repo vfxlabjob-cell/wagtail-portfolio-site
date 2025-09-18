@@ -1,1 +1,0 @@
-web: cd mysite && python manage.py migrate --noinput --settings=mysite.settings.no_csrf && python manage.py create_superuser --settings=mysite.settings.no_csrf && python manage.py collectstatic --noinput --settings=mysite.settings.no_csrf && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120 --settings=mysite.settings.no_csrf
