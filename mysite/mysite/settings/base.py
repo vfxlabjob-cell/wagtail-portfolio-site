@@ -207,9 +207,6 @@ WAGTAILADMIN_RICH_TEXT_EDITORS = {
                 'code',
                 'superscript', 'subscript', 'strikethrough',
                 'blockquote',
-                # --- НОВЫЕ КНОПКИ ИЗ ПЛАГИНА ---
-                # Обратите внимание: названия без дефиса
-                'alignleft', 'aligncenter', 'alignright', 'alignjustify',
             ]
         }
     },
