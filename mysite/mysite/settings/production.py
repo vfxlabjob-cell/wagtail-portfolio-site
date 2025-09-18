@@ -55,58 +55,13 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 
 # Настройки базы данных для продакшена
-# Используем переменные от Railway
-import dj_database_url
-
-# Отладочная информация
-print("=== DATABASE DEBUG ===")
-print(f"DATABASE_URL: {os.environ.get('DATABASE_URL', 'NOT SET')}")
-print(f"PGHOST: {os.environ.get('PGHOST', 'NOT SET')}")
-print(f"PGPORT: {os.environ.get('PGPORT', 'NOT SET')}")
-print(f"PGDATABASE: {os.environ.get('PGDATABASE', 'NOT SET')}")
-print(f"PGUSER: {os.environ.get('PGUSER', 'NOT SET')}")
-print("=====================")
-
-# Получаем переменные от Railway
-DATABASE_URL = os.environ.get('DATABASE_URL')
-PGHOST = os.environ.get('PGHOST')
-PGPORT = os.environ.get('PGPORT')
-PGDATABASE = os.environ.get('PGDATABASE')
-PGUSER = os.environ.get('PGUSER')
-PGPASSWORD = os.environ.get('PGPASSWORD')
-
-if DATABASE_URL:
-    # Используем Railway DATABASE_URL
-    print("Using DATABASE_URL")
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
+# Используем SQLite для Railway (проще и надежнее)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-elif PGHOST and PGPORT and PGDATABASE and PGUSER:
-    # Используем отдельные переменные Railway
-    print("Using Railway PostgreSQL variables")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': PGDATABASE,
-            'USER': PGUSER,
-            'PASSWORD': PGPASSWORD or '',
-            'HOST': PGHOST,
-            'PORT': PGPORT,
-        }
-    }
-else:
-    # Fallback для локальной разработки
-    print("Using localhost fallback")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'wagtail_site',
-            'USER': 'postgres',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
-    }
+}
 
 # Настройки email для продакшена
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
