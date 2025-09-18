@@ -10,7 +10,7 @@ DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(50))
 
 # SECURITY WARNING: define the correct hosts in production!
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,web-production-c60254.up.railway.app,*.up.railway.app').split(',')
 
 # Настройки безопасности для продакшена (отключены для Railway)
 # Railway обрабатывает SSL на уровне прокси
