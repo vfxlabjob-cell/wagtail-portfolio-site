@@ -2,6 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
+# This command executes the deployment script.
 startCommand = "bash start.sh"
 healthcheckPath = "/"
 healthcheckTimeout = 150
