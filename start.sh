@@ -29,6 +29,10 @@ python manage.py check_media --settings=mysite.settings.no_csrf
 echo "Importing real site data..."
 python manage.py import_site_data --settings=mysite.settings.no_csrf
 
+# Fix site root to point to the correct homepage
+echo "Fixing site root page..."
+python manage.py fix_site_root --settings=mysite.settings.no_csrf
+
 # Publish existing pages
 echo "Publishing existing pages..."
 python manage.py publish_pages --settings=mysite.settings.no_csrf
