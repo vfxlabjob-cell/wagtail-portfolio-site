@@ -2,4 +2,22 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "cd mysite && python manage.py migrate --noinput --settings=mysite.settings.no_csrf && python manage.py create_superuser --settings=mysite.settings.no_csrf && python manage.py collectstatic --noinput --settings=mysite.settings.no_csrf && DJANGO_SETTINGS_MODULE=mysite.settings.no_csrf gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120"
+startCommand = """
+if [ "$RUN_IMPORT" = "True" ]; then
+    echo 'RUN_IMPORT is set to True, running import_site_data...'
+    python manage.py import_site_data --settings=mysite.settings.production
+    
+    # Сбрасываем переменную, чтобы импорт не запускался каждый раз
+    # (Это потребует настройки в панели Railway для удаления переменной после деплоя,
+    # либо можно просто закомментировать эту строку после первого успешного импорта)
+    # unset RUN_IMPORT 
+else
+    echo 'RUN_IMPORT is not set to True, skipping import.'
+fi
+
+gunicorn mysite.wsgi:application
+"""
+healthcheckPath = "/__health__/"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

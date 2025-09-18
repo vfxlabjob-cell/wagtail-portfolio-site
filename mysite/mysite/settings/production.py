@@ -3,7 +3,7 @@ import os
 import secrets
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Временно включаем для диагностики
+DEBUG = False
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Генерируем новый секретный ключ для продакшена
@@ -14,10 +14,7 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,web-product
 
 # CSRF настройки для Railway
 CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-c60254.up.railway.app',
-    'https://web-production-c60254.up.railway.app/',
-    'https://*.up.railway.app',
-    'https://*.up.railway.app/',
+    f"https://{host}" for host in ALLOWED_HOSTS if host not in ['localhost', '127.0.0.1']
 ]
 
 # Временно отключаем CSRF для отладки
@@ -29,31 +26,32 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = None
 CSRF_FAILURE_VIEW = None
 
-# Отключаем CSRF middleware временно
+# Включаем CSRF middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # "django.middleware.csrf.CsrfViewMiddleware",  # Временно отключен
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
-# Настройки безопасности для продакшена (отключены для Railway)
-# Railway обрабатывает SSL на уровне прокси
-SECURE_SSL_REDIRECT = False
-SECURE_HSTS_SECONDS = 0
-SECURE_HSTS_INCLUDE_SUBDOMAINS = False
-SECURE_HSTS_PRELOAD = False
+# Настройки безопасности для продакшена
+# Railway обрабатывает SSL на уровне прокси, но эти заголовки важны
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'True').lower() == 'true'
+SECURE_HSTS_SECONDS = 31536000 # 1 год
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Настройки cookies для безопасности (отключены для Railway)
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+# Настройки cookies для безопасности
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
 
