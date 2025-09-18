@@ -55,12 +55,13 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 
 # Настройки базы данных для продакшена
-# Используем SQLite для Railway (проще и надежнее)
+# Используем DATABASE_URL от Railway
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.parse(
+        os.environ.get('DATABASE_URL', 'postgresql://postgres:password@localhost:5432/railway')
+    )
 }
 
 # Настройки email для продакшена
