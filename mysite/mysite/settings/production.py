@@ -10,12 +10,15 @@ DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(50))
 
 # SECURITY WARNING: define the correct hosts in production!
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,web-production-c60254.up.railway.app,*.up.railway.app').split(',')
+
 
 # CSRF настройки для Railway
 CSRF_TRUSTED_ORIGINS = [
     f"https://{host}" for host in ALLOWED_HOSTS if host not in ['localhost', '127.0.0.1']
 ]
+# For debugging health checks, temporarily allow all origins
+CSRF_TRUSTED_ORIGINS.append("*")
 
 # Включаем CSRF middleware
 MIDDLEWARE = [
