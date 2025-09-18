@@ -34,6 +34,7 @@ CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 # MIDDLEWARE БЕЗ CSRF
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Для статических файлов
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     # CSRF MIDDLEWARE ПОЛНОСТЬЮ УБРАН
@@ -73,12 +74,10 @@ DATABASES = {
 # Настройки для статических файлов
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Настройки для поиска статических файлов
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+# STATICFILES_DIRS = []  # Убираем несуществующую директорию
 
 # Настройки для статических файлов в продакшене
 STATICFILES_FINDERS = [
