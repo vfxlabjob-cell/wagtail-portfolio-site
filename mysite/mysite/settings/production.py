@@ -3,7 +3,7 @@ import os
 import secrets
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True  # Временно включаем для диагностики
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Генерируем новый секретный ключ для продакшена
@@ -62,6 +62,28 @@ DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/wagta
 
 DATABASES = {
     'default': dj_database_url.parse(DATABASE_URL)
+}
+
+# Логирование для диагностики
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
 }
 
 # Настройки email для продакшена
