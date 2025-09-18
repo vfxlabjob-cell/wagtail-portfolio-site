@@ -55,27 +55,56 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 
 # Настройки базы данных для продакшена
-# Используем DATABASE_URL от Railway
+# Используем переменные от Railway
 import dj_database_url
 
-# Получаем DATABASE_URL от Railway
+# Отладочная информация
+print("=== DATABASE DEBUG ===")
+print(f"DATABASE_URL: {os.environ.get('DATABASE_URL', 'NOT SET')}")
+print(f"PGHOST: {os.environ.get('PGHOST', 'NOT SET')}")
+print(f"PGPORT: {os.environ.get('PGPORT', 'NOT SET')}")
+print(f"PGDATABASE: {os.environ.get('PGDATABASE', 'NOT SET')}")
+print(f"PGUSER: {os.environ.get('PGUSER', 'NOT SET')}")
+print("=====================")
+
+# Получаем переменные от Railway
 DATABASE_URL = os.environ.get('DATABASE_URL')
+PGHOST = os.environ.get('PGHOST')
+PGPORT = os.environ.get('PGPORT')
+PGDATABASE = os.environ.get('PGDATABASE')
+PGUSER = os.environ.get('PGUSER')
+PGPASSWORD = os.environ.get('PGPASSWORD')
 
 if DATABASE_URL:
     # Используем Railway DATABASE_URL
+    print("Using DATABASE_URL")
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL)
     }
-else:
-    # Fallback для локальной разработки
+elif PGHOST and PGPORT and PGDATABASE and PGUSER:
+    # Используем отдельные переменные Railway
+    print("Using Railway PostgreSQL variables")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('PGDATABASE', 'wagtail_site'),
-            'USER': os.environ.get('PGUSER', 'postgres'),
-            'PASSWORD': os.environ.get('PGPASSWORD', ''),
-            'HOST': os.environ.get('PGHOST', 'localhost'),
-            'PORT': os.environ.get('PGPORT', '5432'),
+            'NAME': PGDATABASE,
+            'USER': PGUSER,
+            'PASSWORD': PGPASSWORD or '',
+            'HOST': PGHOST,
+            'PORT': PGPORT,
+        }
+    }
+else:
+    # Fallback для локальной разработки
+    print("Using localhost fallback")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'wagtail_site',
+            'USER': 'postgres',
+            'PASSWORD': '',
+            'HOST': 'localhost',
+            'PORT': '5432',
         }
     }
 
