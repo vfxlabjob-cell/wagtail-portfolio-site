@@ -17,6 +17,10 @@ python manage.py create_superuser --settings=mysite.settings.no_csrf
 echo "Clearing corrupted sessions..."
 python manage.py clear_sessions --settings=mysite.settings.no_csrf
 
+# Create initial content
+echo "Creating initial content..."
+python manage.py create_initial_content --settings=mysite.settings.no_csrf
+
 # Collect static files
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --settings=mysite.settings.no_csrf

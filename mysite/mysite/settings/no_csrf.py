@@ -5,6 +5,10 @@ import secrets
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False  # Отключаем для продакшена
 
+# Настройки для обработки ошибок
+ALLOWED_HOSTS = ['*']  # Разрешаем все хосты
+ADMINS = [('Admin', 'admin@example.com')]  # Для отправки ошибок
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(50))
 
@@ -90,11 +94,11 @@ STATICFILES_FINDERS = [
 # Настройки медиа файлов
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# Локальное хранилище
+# Локальное хранилище (fallback)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-# R2 Settings
+# R2/Cloudflare Settings
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
@@ -105,6 +109,15 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 AWS_S3_FILE_OVERWRITE = False
+AWS_S3_VERIFY = False  # Для R2
+AWS_S3_REGION_NAME = 'auto'  # Для Cloudflare R2
+
+# Если R2 настроен, используем его, иначе локальное хранилище
+if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY and AWS_STORAGE_BUCKET_NAME:
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/' if AWS_S3_CUSTOM_DOMAIN else f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_ENDPOINT_URL.replace("https://", "")}/'
+else:
+    # Fallback на локальное хранилище
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 # Логирование - минимизируем для Railway
 LOGGING = {
