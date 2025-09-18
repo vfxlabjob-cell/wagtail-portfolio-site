@@ -30,12 +30,12 @@ CSRF_COOKIE_HTTPONLY = True
 
 # Настройки для статических файлов
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 # Настройки медиа файлов
 # Cloudflare R2 Storage (для продакшена)
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 
 # Локальное хранилище (для разработки)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
