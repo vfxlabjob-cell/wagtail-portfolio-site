@@ -10,7 +10,7 @@ DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(50))
 
 # SECURITY WARNING: define the correct hosts in production!
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,*.up.railway.app').split(',')
+ALLOWED_HOSTS = ['*']
 
 
 # CSRF настройки для Railway
