@@ -19,6 +19,16 @@ python manage.py migrate --noinput --settings=mysite.settings.production
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --settings=mysite.settings.production
 
+# Conditionally import data
+if [ "$RUN_IMPORT" = "True" ]; then
+    echo ">>> RUNNING DATA IMPORT"
+    python manage.py import_site_data --settings=mysite.settings.production
+    echo ">>> FIXING SITE ROOT"
+    python manage.py fix_site_root --settings=mysite.settings.production
+else
+    echo ">>> SKIPPING DATA IMPORT"
+fi
+
 # Create superuser if it doesn't exist (optional - only if DJANGO_SUPERUSER_* env vars are set)
 if [ -n "$DJANGO_SUPERUSER_USERNAME" ] && [ -n "$DJANGO_SUPERUSER_EMAIL" ] && [ -n "$DJANGO_SUPERUSER_PASSWORD" ]; then
     echo "Creating superuser..."
