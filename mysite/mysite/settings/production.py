@@ -14,11 +14,13 @@ ALLOWED_HOSTS = ['*']
 
 
 # CSRF настройки для Railway
-CSRF_TRUSTED_ORIGINS = [
-    f"https://{host}" for host in ALLOWED_HOSTS if host not in ['localhost', '127.0.0.1']
-]
-# For Railway deployment, trust all subdomains of railway.app
-CSRF_TRUSTED_ORIGINS.append("https://*.up.railway.app")
+# We use RAILWAY_PUBLIC_DOMAIN which is automatically set by Railway,
+# and also trust all subdomains of railway.app for internal health checks.
+RAILWAY_PUBLIC_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+
+CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app']
+if RAILWAY_PUBLIC_DOMAIN:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RAILWAY_PUBLIC_DOMAIN}")
 
 
 # Включаем CSRF middleware
