@@ -12,7 +12,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(50))
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ['*']
 
-
 # CSRF настройки для Railway
 # We use RAILWAY_PUBLIC_DOMAIN which is automatically set by Railway,
 # and also trust all subdomains of railway.app for internal health checks.
@@ -21,7 +20,6 @@ RAILWAY_PUBLIC_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
 CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app']
 if RAILWAY_PUBLIC_DOMAIN:
     CSRF_TRUSTED_ORIGINS.append(f"https://{RAILWAY_PUBLIC_DOMAIN}")
-
 
 # Включаем CSRF middleware
 MIDDLEWARE = [
@@ -39,8 +37,9 @@ MIDDLEWARE = [
 # Настройки безопасности для продакшена
 # Railway обрабатывает SSL на уровне прокси, но эти заголовки важны
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'True').lower() == 'true'
-SECURE_HSTS_SECONDS = 31536000 # 1 год
+# Отключаем SSL redirect для Railway - они сами это делают
+SECURE_SSL_REDIRECT = False
+SECURE_HSTS_SECONDS = 31536000  # 1 год
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -59,60 +58,48 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Настройки медиа файлов
-# Cloudflare R2 Storage (для продакшена)
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# Используем S3/R2 storage только если все переменные настроены
+if all([
+    os.environ.get('AWS_ACCESS_KEY_ID'),
+    os.environ.get('AWS_SECRET_ACCESS_KEY'),
+    os.environ.get('AWS_STORAGE_BUCKET_NAME'),
+    os.environ.get('AWS_S3_ENDPOINT_URL')
+]):
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# Локальное хранилище (для разработки)
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+    # R2 Settings
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')
+    AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
 
-# R2 Settings
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')
-AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
-AWS_DEFAULT_ACL = 'public-read'
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
+    print("Using S3/R2 storage for media files")
+else:
+    # Fallback к локальному хранилищу
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    MEDIA_URL = '/media/'
+    print("Using local storage for media files")
 
 # Настройки базы данных для продакшена
 # Используем DATABASE_URL от Railway
 import dj_database_url
 
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/wagtail_site')
-
-DATABASES = {
-    'default': dj_database_url.parse(DATABASE_URL)
-}
-
-# Автоматическое создание страниц при первом запуске
-AUTO_CREATE_PAGES = os.environ.get('AUTO_CREATE_PAGES', 'True').lower() == 'true'
-
-# Логирование для диагностики
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    },
-}
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
+    }
+    print("Using PostgreSQL database from DATABASE_URL")
+else:
+    # Fallback к SQLite для локального тестирования
+    print("WARNING: No DATABASE_URL found, using SQLite")
 
 # Настройки email для продакшена
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -122,25 +109,63 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
-# Настройки логирования
+# Единственная настройка логирования
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
         'file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+            'formatter': 'verbose',
         },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'gunicorn.access': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'gunicorn.error': {
+            'handlers': ['console', 'file'],
             'level': 'ERROR',
-            'propagate': True,
+            'propagate': False,
         },
     },
 }
 
 # Создаем папку для логов если её нет
 os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)
+
+# Wagtail production settings
+WAGTAILADMIN_BASE_URL = f"https://{RAILWAY_PUBLIC_DOMAIN}" if RAILWAY_PUBLIC_DOMAIN else "http://localhost:8000"
+
+print(f"Production settings loaded:")
+print(f"- DEBUG: {DEBUG}")
+print(f"- ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+print(f"- DATABASE: {'PostgreSQL' if DATABASE_URL else 'SQLite'}")
+print(f"- WAGTAILADMIN_BASE_URL: {WAGTAILADMIN_BASE_URL}")

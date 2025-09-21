@@ -4,7 +4,12 @@ builder = "NIXPACKS"
 [deploy]
 # This command executes the deployment script.
 startCommand = "bash start.sh"
-healthcheckPath = "/"
-healthcheckTimeout = 150
+healthcheckPath = "/health/"
+healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
+restartPolicyMaxRetries = 3
+
+[env]
+# Railway will automatically set these, but we can specify defaults
+PORT = "8000"
+RAILWAY_ENVIRONMENT = "production"

@@ -1,0 +1,45 @@
+# Railway Environment Variables Example
+# Copy these to your Railway project's environment variables section
+
+# Django Configuration
+SECRET_KEY=your-super-secret-key-here-make-it-long-and-random
+DEBUG=False
+RAILWAY_ENVIRONMENT=production
+
+# Database (Railway will provide this automatically when you add PostgreSQL)
+DATABASE_URL=postgresql://username:password@host:port/database_name
+
+# Security Settings
+SECURE_SSL_REDIRECT=False
+ALLOWED_HOSTS=*
+
+# Optional: Superuser Creation (only set if you want to auto-create admin user)
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+DJANGO_SUPERUSER_PASSWORD=your-secure-password
+
+# Optional: Email Configuration
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
+
+# Optional: Cloudflare R2 / AWS S3 Storage (for media files)
+# Only set these if you want to use external storage for media files
+# AWS_ACCESS_KEY_ID=your-r2-access-key
+# AWS_SECRET_ACCESS_KEY=your-r2-secret-key
+# AWS_STORAGE_BUCKET_NAME=your-bucket-name
+# AWS_S3_ENDPOINT_URL=https://your-account-id.r2.cloudflarestorage.com
+# AWS_S3_CUSTOM_DOMAIN=your-custom-domain.com
+
+# Railway Specific (Railway sets these automatically)
+# RAILWAY_PUBLIC_DOMAIN=your-app-name-production-xxxx.up.railway.app
+# PORT=8000
+
+# Instructions:
+# 1. Go to your Railway project dashboard
+# 2. Click on your service
+# 3. Go to Variables tab
+# 4. Add these variables one by one (except the commented ones you don't need)
+# 5. Make sure to generate a strong SECRET_KEY (you can use: python -c "import secrets; print(secrets.token_urlsafe(50))")
+# 6. Add PostgreSQL database service to get DATABASE_URL automatically
