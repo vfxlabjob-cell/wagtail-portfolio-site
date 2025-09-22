@@ -58,8 +58,8 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Настройки медиа файлов
-# Используем S3/R2 storage только если все переменные настроены
-if all([
+# Временно отключаем R2 для тестирования деплоя
+if False and all([
     os.environ.get('AWS_ACCESS_KEY_ID'),
     os.environ.get('AWS_SECRET_ACCESS_KEY'),
     os.environ.get('AWS_STORAGE_BUCKET_NAME'),
