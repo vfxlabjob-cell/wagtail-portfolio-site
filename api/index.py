@@ -29,3 +29,6 @@ application = get_wsgi_application()
 # Vercel handler
 def handler(request):
     return application(request)
+
+# Для совместимости с Vercel
+app = application

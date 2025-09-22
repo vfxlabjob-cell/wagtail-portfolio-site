@@ -6,6 +6,9 @@
 2. **Логирование**: Убран file handler из настроек логирования, оставлен только console handler
 3. **Переменные окружения**: Исправлена ссылка на `RAILWAY_PUBLIC_DOMAIN` на `VERCEL_URL`
 4. **Структура проекта**: Создан `.vercelignore` для исключения ненужных файлов
+5. **Статические файлы**: Исправлен путь к STATIC_ROOT для Vercel (/tmp/staticfiles)
+6. **Vercel handler**: Добавлена совместимость с Vercel handler
+7. **Папка staticfiles**: Создана папка staticfiles с .gitkeep файлом
 
 ## Настройка переменных окружения в Vercel
 

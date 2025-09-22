@@ -27,5 +27,10 @@
     "env": {
       "DJANGO_SETTINGS_MODULE": "mysite.settings.production"
     }
+  },
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 30
+    }
   }
 }

@@ -50,7 +50,8 @@ SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
 
 # Настройки для статических файлов
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# На Vercel используем временную папку для статических файлов
+STATIC_ROOT = os.path.join('/tmp', 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

@@ -28,6 +28,10 @@ media/
 exported_data/
 *.log
 
+# Исключаем содержимое staticfiles, но оставляем папку
+mysite/staticfiles/*
+!mysite/staticfiles/.gitkeep
+
 # Файлы разработки
 .env
 .env.local
