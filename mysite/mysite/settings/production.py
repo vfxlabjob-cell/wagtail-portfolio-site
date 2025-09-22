@@ -65,6 +65,16 @@ if all([
     os.environ.get('AWS_STORAGE_BUCKET_NAME'),
     os.environ.get('AWS_S3_ENDPOINT_URL')
 ]):
+    # Для Django 4.2+ используем STORAGES
+    STORAGES = {
+        'default': {
+            'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
+    # Для совместимости со старыми версиями
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
     # R2 Settings
@@ -81,6 +91,9 @@ if all([
     AWS_DEFAULT_ACL = None
 
     print("Using S3/R2 storage for media files")
+    print(f"R2 Endpoint: {AWS_S3_ENDPOINT_URL}")
+    print(f"R2 Bucket: {AWS_STORAGE_BUCKET_NAME}")
+    print(f"R2 Access Key: {AWS_ACCESS_KEY_ID[:10]}...")
 else:
     # Fallback к локальному хранилищу
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
