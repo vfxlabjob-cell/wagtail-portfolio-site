@@ -1,3 +1,0 @@
-Railway Test File
-Created: $(date)
-This file is created to test Railway deployment
