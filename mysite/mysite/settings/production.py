@@ -54,6 +54,11 @@ AWS_DEFAULT_ACL = 'public-read'
 AWS_S3_FILE_OVERWRITE = False
 AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
 
+# S3 Storage settings for django-storages
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
 # Add WhiteNoise middleware for serving static files
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
@@ -64,15 +69,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-        "OPTIONS": {
-            "bucket_name": os.environ.get('AWS_STORAGE_BUCKET_NAME'),
-            "region_name": "auto",
-            "endpoint_url": os.environ.get('AWS_S3_ENDPOINT_URL'),
-            "aws_access_key_id": os.environ.get('AWS_ACCESS_KEY_ID'),
-            "aws_secret_access_key": os.environ.get('AWS_SECRET_ACCESS_KEY'),
-            "file_overwrite": False,
-            "default_acl": "public-read",
-        },
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
