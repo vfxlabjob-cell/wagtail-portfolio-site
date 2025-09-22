@@ -27,6 +27,7 @@ DJANGO_SUPERUSER_PASSWORD=admin123
 ### 4. Настройка базы данных
 1. В Railway dashboard нажмите "New" → "Database" → "PostgreSQL"
 2. Railway автоматически добавит переменную `DATABASE_URL`
+3. **ВАЖНО**: Убедитесь что PostgreSQL база данных подключена к вашему сервису
 
 ### 5. Настройка домена
 1. В настройках сервиса включите "Generate Domain"
@@ -40,6 +41,7 @@ DJANGO_SUPERUSER_PASSWORD=admin123
 ### 7. Проверка
 После успешного деплоя:
 - Откройте ваш сайт по полученному домену
+- Должны быть созданы страницы: Home, About, проекты
 - Зайдите в админку: `https://your-domain.railway.app/admin/`
 - Логин: `admin`, пароль: `admin123`
 
