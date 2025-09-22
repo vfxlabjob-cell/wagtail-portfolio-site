@@ -4,7 +4,7 @@
 # Django Settings
 SECRET_KEY=your-secret-key-here
 DEBUG=False
-DJANGO_SETTINGS_MODULE=mysite.settings.production
+DJANGO_SETTINGS_MODULE=mysite.settings.dev
 
 # Database (Railway will provide this automatically)
 DATABASE_URL=postgresql://user:password@host:port/database
