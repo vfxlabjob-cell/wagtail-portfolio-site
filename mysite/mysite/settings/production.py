@@ -101,7 +101,8 @@ if all([
     if AWS_S3_CUSTOM_DOMAIN:
         MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
     else:
-        MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/'
+        # Используем основной Railway домен для медиа
+        MEDIA_URL = '/media/'
 
     print("Using S3/R2 storage for media files")
     print(f"R2 Endpoint: {AWS_S3_ENDPOINT_URL}")
