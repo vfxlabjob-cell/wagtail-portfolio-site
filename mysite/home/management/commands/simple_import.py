@@ -208,11 +208,14 @@ class Command(BaseCommand):
             ]
             
             for filename, size, color in sample_images:
+                self.stdout.write(f"Processing image: {filename}")
                 # Проверяем, не существует ли уже изображение с таким именем
                 if Image.objects.filter(title=filename).exists():
+                    self.stdout.write(f"Image {filename} already exists, skipping")
                     continue
                     
                 # Создаем изображение с помощью PIL
+                self.stdout.write(f"Creating PIL image for {filename}")
                 img = PILImage.new('RGB', size, color)
                 
                 # Добавляем текст на изображение
@@ -222,20 +225,25 @@ class Command(BaseCommand):
                     text = f"Sample Image\n{filename}"
                     # Используем стандартный шрифт
                     draw.text((size[0]//2-100, size[1]//2-20), text, fill=(255, 255, 255))
+                    self.stdout.write(f"Added text to {filename}")
                 except ImportError:
                     # Если нет PIL, просто создаем цветной прямоугольник
+                    self.stdout.write(f"PIL drawing not available for {filename}")
                     pass
                 
                 # Сохраняем в BytesIO
+                self.stdout.write(f"Saving {filename} to BytesIO")
                 img_io = BytesIO()
                 img.save(img_io, format='JPEG', quality=85)
                 img_io.seek(0)
                 
                 # Создаем Wagtail Image
+                self.stdout.write(f"Creating Wagtail Image object for {filename}")
                 wagtail_image = Image(
                     title=filename,
                     file=ImageFile(img_io, name=filename)
                 )
+                self.stdout.write(f"Saving {filename} to storage...")
                 wagtail_image.save()
                 self.stdout.write(f"Created sample image: {filename}")
                 
@@ -243,3 +251,5 @@ class Command(BaseCommand):
             self.stdout.write("PIL not available, skipping image creation")
         except Exception as e:
             self.stdout.write(f"Error creating sample images: {e}")
+            import traceback
+            self.stdout.write(traceback.format_exc())
