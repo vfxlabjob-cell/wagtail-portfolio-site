@@ -1,1 +1,0 @@
-web: cd mysite && python manage.py migrate --settings=mysite.settings.production && python manage.py collectstatic --noinput --settings=mysite.settings.production && python manage.py create_superuser --settings=mysite.settings.production && python manage.py create_site_content --settings=mysite.settings.production && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT
