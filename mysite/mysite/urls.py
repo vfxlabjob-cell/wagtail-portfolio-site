@@ -28,18 +28,11 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 else:
-    # В продакшене статические файлы обслуживаются Django
-    from django.views.static import serve
-    from django.conf import settings
-    
-    # Обработка статических файлов в продакшене
-    urlpatterns += [
-        path('static/<path:path>', serve, {'document_root': settings.STATIC_ROOT}),
-    ]
-    
+    # В продакшене статические файлы обслуживаются WhiteNoise
     # В продакшене медиа файлы обслуживаются через R2
     # Но если MEDIA_URL = '/media/', то нужно добавить обработчик
     if settings.MEDIA_URL == '/media/':
+        from django.views.static import serve
         urlpatterns += [
             path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
         ]
