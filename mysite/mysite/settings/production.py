@@ -90,8 +90,18 @@ if all([
     AWS_QUERYSTRING_AUTH = False  # Don't add auth params to URLs
     AWS_S3_FILE_OVERWRITE = False  # Don't overwrite files with same name
     
+    # Добавляем заголовки для CORS
+    AWS_S3_OBJECT_PARAMETERS.update({
+        'CacheControl': 'max-age=86400',
+        'ACL': 'public-read',
+    })
+    
     # Set MEDIA_URL to R2 URL
-    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/'
+    # Если есть custom domain, используйте его
+    if AWS_S3_CUSTOM_DOMAIN:
+        MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+    else:
+        MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/'
 
     print("Using S3/R2 storage for media files")
     print(f"R2 Endpoint: {AWS_S3_ENDPOINT_URL}")
