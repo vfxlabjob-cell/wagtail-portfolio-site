@@ -89,6 +89,9 @@ if all([
     }
     AWS_QUERYSTRING_AUTH = False  # Don't add auth params to URLs
     AWS_S3_FILE_OVERWRITE = False  # Don't overwrite files with same name
+    
+    # Set MEDIA_URL to R2 URL
+    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/'
 
     print("Using S3/R2 storage for media files")
     print(f"R2 Endpoint: {AWS_S3_ENDPOINT_URL}")
