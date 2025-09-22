@@ -7,7 +7,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0033_remove_infopage_description_infopage_body_and_more'),
+        ('home', '0030_infoindexpage_infopage'),
     ]
 
     operations = [

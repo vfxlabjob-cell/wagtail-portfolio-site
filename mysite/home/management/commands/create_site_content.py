@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from wagtail.models import Page, Site
-from home.models import PortfolioIndexPage, ProjectCategory, ProjectPage, CardsIndexPage, InfoIndexPage, InfoPage
+from home.models import PortfolioIndexPage, ProjectCategory, ProjectPage, InfoIndexPage, InfoPage
 from django.utils import timezone
 
 class Command(BaseCommand):
@@ -17,18 +17,14 @@ class Command(BaseCommand):
                 return
             
             # 2. Создаем PortfolioIndexPage если не существует
-            portfolio_page, created = PortfolioIndexPage.objects.get_or_create(
-                title="Portfolio",
-                slug="portfolio",
-                defaults={
-                    'intro': 'Welcome to my portfolio',
-                    'live': True,
-                }
-            )
-            if created:
-                portfolio_page.path = root_page.path + '0001'
-                portfolio_page.depth = 2
-                portfolio_page.save()
+            portfolio_page = PortfolioIndexPage.objects.filter(slug="portfolio").first()
+            if not portfolio_page:
+                portfolio_page = PortfolioIndexPage(
+                    title="Portfolio",
+                    slug="portfolio",
+                    intro='Welcome to my portfolio'
+                )
+                root_page.add_child(instance=portfolio_page)
                 self.stdout.write(self.style.SUCCESS(f'Created Portfolio page: {portfolio_page.title}'))
             else:
                 self.stdout.write(f'Portfolio page already exists: {portfolio_page.title}')

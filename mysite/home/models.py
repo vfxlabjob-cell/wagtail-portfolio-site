@@ -100,23 +100,15 @@ class BodyStreamBlock(blocks.StreamBlock):
 
 
 class PortfolioIndexPage(Page):
-    intro = RichTextField(blank=True, help_text="Introductory text for the main portfolio page.")
-    content_panels = Page.content_panels + [FieldPanel('intro')]
-    
-    parent_page_types = ['wagtailcore.Page']
-    subpage_types = ['home.CardsIndexPage', 'home.InfoIndexPage']
-
-
-class CardsIndexPage(Page):
-    """Главная страница раздела Cards - здесь будут все карточки проектов"""
-    intro = RichTextField(blank=True, help_text="Вводный текст для раздела карточек проектов.")
+    """Главная страница портфолио - здесь будут все карточки проектов"""
+    intro = RichTextField(blank=True, help_text="Вводный текст для главной страницы портфолио.")
     
     content_panels = Page.content_panels + [
         FieldPanel('intro'),
     ]
     
-    parent_page_types = ['home.PortfolioIndexPage']
-    subpage_types = ['home.ProjectPage']
+    parent_page_types = ['wagtailcore.Page']
+    subpage_types = ['home.ProjectPage', 'home.InfoIndexPage']
     
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -158,6 +150,8 @@ class CardsIndexPage(Page):
         context['display_secondary_text'] = secondary_text
         return context
 
+
+
 class ProjectPage(Page):
     category = models.ForeignKey('home.ProjectCategory', null=True, blank=True, on_delete=models.SET_NULL, related_name='projects')
     thumbnail_image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+', help_text="Изображение для сетки (если не выбрано видео в Card Head 2).")
@@ -195,7 +189,7 @@ class ProjectPage(Page):
         
         super().save(*args, **kwargs)
 
-    parent_page_types = ['home.CardsIndexPage']
+    parent_page_types = ['home.PortfolioIndexPage']
     subpage_types = []
     
     def get_thumbnail_video(self):
