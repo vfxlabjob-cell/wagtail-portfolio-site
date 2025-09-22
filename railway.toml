@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "cd mysite && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT"
+startCommand = "cd mysite && python manage.py migrate --settings=mysite.settings.production && python manage.py collectstatic --noinput --settings=mysite.settings.production && python manage.py setup_site --settings=mysite.settings.production && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT"
 healthcheckPath = "/"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
