@@ -33,8 +33,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Wagtail settings
 WAGTAIL_SITE_NAME = "Portfolio Site"
 
-# WhiteNoise settings for static files
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+# Static files settings for Railway
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # Optimize for Railway deployment
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000
