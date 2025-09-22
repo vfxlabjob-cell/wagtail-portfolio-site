@@ -1,2 +1,2 @@
-release: cd mysite && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py fix_home_page && python manage.py create_site_content
+release: cd mysite && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py setup_site && python manage.py create_site_content
 web: cd mysite && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT

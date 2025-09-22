@@ -47,3 +47,5 @@ wagtail-draftail-plugins==0.4.0
 wagtail-modeladmin==2.2.0
 whitenoise==6.11.0
 Willow==1.11.0
+django-storages==1.14.4
+boto3==1.35.89
