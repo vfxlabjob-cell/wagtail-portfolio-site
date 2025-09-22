@@ -87,8 +87,8 @@ if all([
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = False  # Don't add auth params to URLs
+    AWS_S3_FILE_OVERWRITE = False  # Don't overwrite files with same name
 
     print("Using S3/R2 storage for media files")
     print(f"R2 Endpoint: {AWS_S3_ENDPOINT_URL}")
