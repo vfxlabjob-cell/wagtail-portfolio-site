@@ -11,6 +11,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ['*']  # Временно разрешаем все хосты
 
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-b4d2a.up.railway.app',
+    'https://*.up.railway.app',
+]
+
 # Security settings for production (временно отключены для тестирования)
 # SECURE_SSL_REDIRECT = True
 # SECURE_HSTS_SECONDS = 31536000  # 1 year
