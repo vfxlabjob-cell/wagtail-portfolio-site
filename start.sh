@@ -22,9 +22,8 @@ python manage.py collectstatic --noinput --settings=mysite.settings.production
 # Conditionally import data
 if [ "$RUN_IMPORT" = "True" ]; then
     echo ">>> RUNNING DATA IMPORT"
-    python manage.py import_site_data --settings=mysite.settings.production
-    echo ">>> FIXING SITE ROOT"
-    python manage.py fix_site_root --settings=mysite.settings.production
+    python manage.py simple_import --settings=mysite.settings.production
+    echo ">>> DATA IMPORT COMPLETED"
 else
     echo ">>> SKIPPING DATA IMPORT"
 fi

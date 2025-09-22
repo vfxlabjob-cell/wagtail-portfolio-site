@@ -38,11 +38,18 @@ class Command(BaseCommand):
             if clean_db:
                 self.stdout.write("=== CLEANING DATABASE ===")
 
-                # Удаляем все страницы кроме корневой
+                # Удаляем все страницы кроме системных корневых (depth=1,2)
                 pages_to_delete = Page.objects.exclude(depth__in=[1, 2])
                 if pages_to_delete.exists():
                     self.stdout.write(f"Deleting {pages_to_delete.count()} pages...")
                     pages_to_delete.delete()
+
+                # Удаляем все Home страницы (они будут пересозданы)
+                from home.models import HomePage
+                home_pages = HomePage.objects.all()
+                if home_pages.exists():
+                    self.stdout.write(f"Deleting {home_pages.count()} home pages...")
+                    home_pages.delete()
 
                 # Удаляем категории и видео
                 categories_count = ProjectCategory.objects.count()
@@ -99,13 +106,22 @@ class Command(BaseCommand):
 
                     for obj_data in pages_to_import:
                         try:
+                            # Пропускаем корневые системные страницы (Root, Welcome)
+                            if obj_data['fields'].get('depth', 0) <= 2:
+                                continue
+
                             # Сохраняем старый pk для связи
                             old_pk = obj_data['pk']
                             obj_data['pk'] = None
 
-                            # Убираем parent_id для первого прохода
+                            # Находим родительскую страницу (обычно Welcome page с depth=2)
                             if 'parent_id' in obj_data['fields']:
-                                del obj_data['fields']['parent_id']
+                                # Ищем подходящую родительскую страницу
+                                parent_page = Page.objects.filter(depth=2).first()
+                                if parent_page:
+                                    obj_data['fields']['parent_id'] = parent_page.id
+                                else:
+                                    del obj_data['fields']['parent_id']
 
                             obj = serializers.deserialize('json', json.dumps([obj_data]))
                             for item in obj:
