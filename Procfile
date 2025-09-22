@@ -1,1 +1,1 @@
-web: cd mysite && python manage.py migrate --settings=mysite.settings.production && python manage.py collectstatic --noinput --settings=mysite.settings.production && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT
+web: cd mysite && python manage.py migrate --settings=mysite.settings.production && python manage.py collectstatic --noinput --settings=mysite.settings.production && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT --timeout 120 --workers 2 --max-requests 1000

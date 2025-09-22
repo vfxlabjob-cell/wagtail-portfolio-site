@@ -34,7 +34,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 WAGTAIL_SITE_NAME = "Portfolio Site"
 
 # WhiteNoise settings for static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+
+# Optimize for Railway deployment
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
