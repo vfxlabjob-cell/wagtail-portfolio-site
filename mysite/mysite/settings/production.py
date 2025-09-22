@@ -15,7 +15,17 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'https://web-production-c60254.up.railway.app',
     'https://*.up.railway.app',
+    'https://*.railway.app',
 ]
+
+# Additional CSRF settings
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = True
+
+# Temporary fix for Railway CSRF issues
+CSRF_COOKIE_SECURE = False  # Set to False for Railway
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -51,10 +61,6 @@ WAGTAILSEARCH_BACKENDS = {
         'BACKEND': 'wagtail.search.backends.database',
     }
 }
-
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
-BASE_URL = os.environ.get('RAILWAY_PUBLIC_DOMAIN', 'http://localhost:8000')
 
 # Logging
 LOGGING = {
