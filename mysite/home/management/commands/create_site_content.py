@@ -17,17 +17,17 @@ class Command(BaseCommand):
                 return
             
             # 2. Создаем PortfolioIndexPage если не существует
-            portfolio_page = PortfolioIndexPage.objects.filter(slug="portfolio").first()
+            portfolio_page = PortfolioIndexPage.objects.filter(slug="home").first()
             if not portfolio_page:
                 portfolio_page = PortfolioIndexPage(
-                    title="Portfolio",
-                    slug="portfolio",
+                    title="Home",
+                    slug="home",
                     intro='Welcome to my portfolio'
                 )
                 root_page.add_child(instance=portfolio_page)
-                self.stdout.write(self.style.SUCCESS(f'Created Portfolio page: {portfolio_page.title}'))
+                self.stdout.write(self.style.SUCCESS(f'Created Home page: {portfolio_page.title}'))
             else:
-                self.stdout.write(f'Portfolio page already exists: {portfolio_page.title}')
+                self.stdout.write(f'Home page already exists: {portfolio_page.title}')
             
             # 3. Создаем категории проектов
             categories_data = [

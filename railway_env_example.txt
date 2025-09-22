@@ -1,0 +1,19 @@
+# Railway Environment Variables
+# Copy these to your Railway project settings
+
+# Django Settings
+SECRET_KEY=your-secret-key-here
+DEBUG=False
+DJANGO_SETTINGS_MODULE=mysite.settings.production
+
+# Database (Railway will provide this automatically)
+DATABASE_URL=postgresql://user:password@host:port/database
+
+# Railway specific
+RAILWAY_PUBLIC_DOMAIN=https://your-app-name.railway.app
+
+# Optional: AWS S3 for media files (if you want to use S3)
+# AWS_ACCESS_KEY_ID=your-access-key
+# AWS_SECRET_ACCESS_KEY=your-secret-key
+# AWS_STORAGE_BUCKET_NAME=your-bucket-name
+# AWS_S3_REGION_NAME=us-east-1
