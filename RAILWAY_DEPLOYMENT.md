@@ -1,97 +1,77 @@
 # Railway Deployment Guide
 
-## Проблемы и решения
+## Шаги для деплоя на Railway
 
-### Проблема: Сайт деплоится успешно, но нет админ панели и страниц
+### 1. Подготовка проекта
+- Убедитесь что все файлы закоммичены в git
+- Проект должен быть в корне репозитория
 
-**Причины:**
-1. Не создается суперпользователь
-2. Не создаются базовые страницы Wagtail
-3. Проблемы со статическими файлами
-4. Неправильные настройки базы данных
+### 2. Создание проекта на Railway
+1. Зайдите на https://railway.app
+2. Нажмите "New Project"
+3. Выберите "Deploy from GitHub repo"
+4. Выберите ваш репозиторий `vfxlabjob-cell/wagtail-portfolio-site`
 
-## Решение
-
-### 1. Настройка переменных окружения в Railway
-
-Добавьте следующие переменные в настройках вашего проекта Railway:
+### 3. Настройка переменных окружения
+В настройках проекта Railway добавьте следующие переменные:
 
 ```
-SECRET_KEY=your-very-long-and-secure-secret-key-here
-ADMIN_PASSWORD=your-secure-admin-password
-RAILWAY_PUBLIC_DOMAIN=https://your-app-name.up.railway.app
+SECRET_KEY=your-very-secret-key-here
+DEBUG=False
+DJANGO_SETTINGS_MODULE=mysite.settings.production
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+DJANGO_SUPERUSER_PASSWORD=admin123
 ```
 
-### 2. Автоматическая инициализация
+### 4. Настройка базы данных
+1. В Railway dashboard нажмите "New" → "Database" → "PostgreSQL"
+2. Railway автоматически добавит переменную `DATABASE_URL`
 
-Теперь при деплое автоматически выполняется:
+### 5. Настройка домена
+1. В настройках сервиса включите "Generate Domain"
+2. Скопируйте полученный домен
+3. Добавьте переменную `RAILWAY_PUBLIC_DOMAIN=https://your-app-name.railway.app`
 
-1. **Миграции базы данных** - `python manage.py migrate`
-2. **Сбор статических файлов** - `python manage.py collectstatic`
-3. **Инициализация сайта** - `python manage.py setup_site`
-   - Создание суперпользователя (admin)
-   - Создание корневой страницы
-   - Создание страницы Portfolio
-   - Создание страницы Information
-   - Настройка сайта Wagtail
+### 6. Деплой
+1. Railway автоматически запустит деплой при пуше в main ветку
+2. Проверьте логи в Railway dashboard
 
-### 3. Доступ к админ панели
-
+### 7. Проверка
 После успешного деплоя:
+- Откройте ваш сайт по полученному домену
+- Зайдите в админку: `https://your-domain.railway.app/admin/`
+- Логин: `admin`, пароль: `admin123`
 
-- **Админ панель**: `https://your-app-name.up.railway.app/admin/`
-- **Портфолио**: `https://your-app-name.up.railway.app/portfolio/`
-- **Информация**: `https://your-app-name.up.railway.app/info/`
-
-**Логин**: `admin`  
-**Пароль**: значение переменной `ADMIN_PASSWORD`
-
-### 4. Структура сайта
-
-После инициализации у вас будет:
+## Структура файлов для деплоя
 
 ```
-Root Page
-├── Portfolio (главная страница)
-│   └── [ваши проекты будут здесь]
-└── Information
-    └── [информационные страницы]
+/
+├── Procfile                    # Команды запуска
+├── railway.toml               # Конфигурация Railway
+├── railway_env_example.txt    # Пример переменных окружения
+├── requirements.txt           # Python зависимости
+├── mysite/                    # Django проект
+│   ├── manage.py
+│   ├── mysite/
+│   │   ├── settings/
+│   │   │   ├── base.py
+│   │   │   └── production.py  # Настройки для продакшена
+│   │   └── wsgi.py
+│   └── ...
+└── README.md
 ```
 
-### 5. Проверка деплоя
+## Возможные проблемы
 
-1. Проверьте логи Railway на наличие ошибок
-2. Убедитесь, что все переменные окружения установлены
-3. Проверьте доступность `/admin/` и `/portfolio/`
+### Проблема: "Unexposed service"
+**Решение:** Включите "Generate Domain" в настройках сервиса
 
-### 6. Если что-то не работает
+### Проблема: Статические файлы не загружаются
+**Решение:** Убедитесь что `whitenoise` добавлен в middleware и настроен правильно
 
-1. Проверьте логи в Railway Dashboard
-2. Убедитесь, что все переменные окружения установлены
-3. Попробуйте пересоздать проект Railway
+### Проблема: Ошибки миграции
+**Решение:** Проверьте что `DATABASE_URL` настроен правильно
 
-## Команды для локального тестирования
-
-```bash
-# Переключиться на production настройки
-export DJANGO_SETTINGS_MODULE=mysite.settings.production
-
-# Выполнить миграции
-python manage.py migrate --settings=mysite.settings.production
-
-# Собрать статические файлы
-python manage.py collectstatic --noinput --settings=mysite.settings.production
-
-# Инициализировать сайт
-python manage.py setup_site --settings=mysite.settings.production
-
-# Запустить сервер
-python manage.py runserver --settings=mysite.settings.production
-```
-
-## Важные файлы
-
-- `Procfile` - команды запуска для Railway
-- `railway.toml` - конфигурация Railway
-- `mysite/home/management/commands/setup_site.py` - команда инициализации
-- `mysite/mysite/settings/production.py` - production настройки
+### Проблема: Нет админки
+**Решение:** Проверьте что команда `create_superuser` выполнилась успешно в логах
