@@ -12,14 +12,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(50))
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ['*']
 
-# CSRF настройки для Railway
-# We use RAILWAY_PUBLIC_DOMAIN which is automatically set by Railway,
-# and also trust all subdomains of railway.app for internal health checks.
-RAILWAY_PUBLIC_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
-
-CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app']
-if RAILWAY_PUBLIC_DOMAIN:
-    CSRF_TRUSTED_ORIGINS.append(f"https://{RAILWAY_PUBLIC_DOMAIN}")
+# CSRF настройки для Vercel
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.vercel.app',
+    'https://*.vercel.com',
+]
 
 # Включаем CSRF middleware
 MIDDLEWARE = [
@@ -35,9 +32,9 @@ MIDDLEWARE = [
 ]
 
 # Настройки безопасности для продакшена
-# Railway обрабатывает SSL на уровне прокси, но эти заголовки важны
+# Vercel обрабатывает SSL на уровне прокси
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# Отключаем SSL redirect для Railway - они сами это делают
+# Отключаем SSL redirect для Vercel - они сами это делают
 SECURE_SSL_REDIRECT = False
 SECURE_HSTS_SECONDS = 31536000  # 1 год
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -89,7 +86,7 @@ if all([
     }
     AWS_QUERYSTRING_AUTH = False  # Don't add auth params to URLs
     AWS_S3_FILE_OVERWRITE = False  # Don't overwrite files with same name
-    
+как это сделать     
     # Добавляем заголовки для CORS
     AWS_S3_OBJECT_PARAMETERS.update({
         'CacheControl': 'max-age=86400',
