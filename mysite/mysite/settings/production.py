@@ -11,6 +11,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ['*']
 
+# CSRF settings for Railway
+CSRF_TRUSTED_ORIGINS = [
+    'https://wagtail-portfolio-site-production.up.railway.app',
+    'https://*.railway.app',
+    'https://*.up.railway.app',
+]
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 DATABASES = {
