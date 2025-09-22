@@ -86,7 +86,7 @@ if all([
     }
     AWS_QUERYSTRING_AUTH = False  # Don't add auth params to URLs
     AWS_S3_FILE_OVERWRITE = False  # Don't overwrite files with same name
-как это сделать     
+
     # Добавляем заголовки для CORS
     AWS_S3_OBJECT_PARAMETERS.update({
         'CacheControl': 'max-age=86400',
