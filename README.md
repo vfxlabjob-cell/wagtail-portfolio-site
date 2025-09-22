@@ -126,3 +126,4 @@ AWS_S3_ENDPOINT_URL=https://your-account-id.r2.cloudflarestorage.com
 ## Лицензия
 
 MIT License
+# Force Vercel deployment
