@@ -147,10 +147,21 @@ class Command(BaseCommand):
                     self.stdout.write(f"Created project: {project.title}")
 
             # Устанавливаем портфолио как корневую страницу сайта
-            site = Site.objects.get(is_default_site=True)
-            site.root_page = portfolio_page
-            site.save()
-            self.stdout.write("Set portfolio page as default site root")
+            site, created = Site.objects.get_or_create(
+                is_default_site=True,
+                defaults={
+                    'hostname': 'localhost',
+                    'port': 80,
+                    'site_name': 'Portfolio Site',
+                    'root_page': portfolio_page
+                }
+            )
+            if not created:
+                site.root_page = portfolio_page
+                site.save()
+                self.stdout.write("Updated existing site root page")
+            else:
+                self.stdout.write("Created new default site with portfolio root")
 
             # 4. Показываем статистику
             self.stdout.write("\n=== IMPORT STATISTICS ===")
