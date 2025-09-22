@@ -108,6 +108,7 @@ if all([
     print(f"R2 Endpoint: {AWS_S3_ENDPOINT_URL}")
     print(f"R2 Bucket: {AWS_STORAGE_BUCKET_NAME}")
     print(f"R2 Access Key: {AWS_ACCESS_KEY_ID[:10]}...")
+    print("MEDIA_URL set to /media/ for Railway domain compatibility")
 else:
     # Fallback к локальному хранилищу
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
