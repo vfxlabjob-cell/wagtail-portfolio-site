@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from wagtail.models import Page, Site
-from home.models import HomePage, ProjectCategory, Video
+from home.models import PortfolioIndexPage, ProjectCategory, Video
 import json
 import os
 
@@ -28,8 +28,8 @@ class Command(BaseCommand):
             self.stdout.write("=== CLEANING EXISTING DATA ===")
 
             # Удаляем все кастомные страницы
-            HomePage.objects.all().delete()
-            self.stdout.write("Deleted all home pages")
+            PortfolioIndexPage.objects.all().delete()
+            self.stdout.write("Deleted all portfolio pages")
 
             # Удаляем категории и видео
             ProjectCategory.objects.all().delete()
@@ -101,60 +101,59 @@ class Command(BaseCommand):
                 if home_page_data:
                     fields = home_page_data['fields']
 
-                    # Создаем новую домашнюю страницу
-                    home_page = HomePage(
+                    # Создаем новую портфолио страницу
+                    portfolio_page = PortfolioIndexPage(
                         title=fields.get('title', 'Portfolio Site'),
                         slug=fields.get('slug', 'home'),
                         seo_title=fields.get('seo_title', ''),
                         search_description=fields.get('search_description', ''),
                         show_in_menus=fields.get('show_in_menus', True),
                         intro=fields.get('intro', 'Welcome to my portfolio'),
-                        body=fields.get('body', ''),
                         live=True,
                         has_unpublished_changes=False
                     )
 
                     # Добавляем как дочернюю к корневой странице
-                    root.add_child(instance=home_page)
-                    home_page.save_revision().publish()
+                    root.add_child(instance=portfolio_page)
+                    portfolio_page.save_revision().publish()
 
-                    self.stdout.write(f"Created home page: {home_page.title}")
+                    self.stdout.write(f"Created portfolio page: {portfolio_page.title}")
 
                     # Устанавливаем как корневую страницу сайта
                     site = Site.objects.get(is_default_site=True)
-                    site.root_page = home_page
+                    site.root_page = portfolio_page
                     site.save()
                     self.stdout.write("Set as default site root page")
 
                 else:
-                    # Создаем базовую домашнюю страницу
-                    home_page = HomePage(
+                    # Создаем базовую портфолио страницу
+                    portfolio_page = PortfolioIndexPage(
                         title='Portfolio Site',
                         slug='home',
                         intro='Welcome to my portfolio',
                         live=True,
                         has_unpublished_changes=False
                     )
-                    root.add_child(instance=home_page)
-                    home_page.save_revision().publish()
+                    root.add_child(instance=portfolio_page)
+                    portfolio_page.save_revision().publish()
 
                     # Устанавливаем как корневую страницу сайта
                     site = Site.objects.get(is_default_site=True)
-                    site.root_page = home_page
+                    site.root_page = portfolio_page
                     site.save()
-                    self.stdout.write("Created default home page")
+                    self.stdout.write("Created default portfolio page")
 
             # 4. Показываем статистику
             self.stdout.write("\n=== IMPORT STATISTICS ===")
             self.stdout.write(f"Total pages: {Page.objects.count()}")
-            self.stdout.write(f"Total home pages: {HomePage.objects.count()}")
+            self.stdout.write(f"Total portfolio pages: {PortfolioIndexPage.objects.count()}")
             self.stdout.write(f"Total categories: {ProjectCategory.objects.count()}")
             self.stdout.write(f"Total videos: {Video.objects.count()}")
             self.stdout.write(f"Total sites: {Site.objects.count()}")
 
             # 5. Показываем созданные страницы
             self.stdout.write("\n=== CREATED PAGES ===")
-            for page in HomePage.objects.all():
+            for page in PortfolioIndexPage.objects.all():
                 self.stdout.write(f"- {page.title} (ID: {page.id}, Live: {page.live})")
 
             self.stdout.write(self.style.SUCCESS("\n=== SIMPLE IMPORT COMPLETE ==="))

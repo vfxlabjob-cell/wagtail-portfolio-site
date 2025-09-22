@@ -21,9 +21,8 @@ python manage.py collectstatic --noinput --settings=mysite.settings.production
 
 # Conditionally import data
 if [ "$RUN_IMPORT" = "True" ]; then
-    echo ">>> RUNNING DATA IMPORT"
-    python manage.py simple_import --settings=mysite.settings.production
-    echo ">>> DATA IMPORT COMPLETED"
+    echo ">>> DATA IMPORT TEMPORARILY DISABLED"
+    echo ">>> Please fix import command first"
 else
     echo ">>> SKIPPING DATA IMPORT"
 fi
