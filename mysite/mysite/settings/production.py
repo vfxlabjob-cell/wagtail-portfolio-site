@@ -153,12 +153,13 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
-            'formatter': 'verbose',
-        },
+        # Убираем file handler для Vercel - файловая система read-only
+        # 'file': {
+        #     'level': 'ERROR',
+        #     'class': 'logging.FileHandler',
+        #     'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+        #     'formatter': 'verbose',
+        # },
     },
     'root': {
         'handlers': ['console'],
@@ -166,7 +167,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
@@ -176,18 +177,23 @@ LOGGING = {
             'propagate': False,
         },
         'gunicorn.error': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'ERROR',
             'propagate': False,
         },
     },
 }
 
-# Создаем папку для логов если её нет
-os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)
+# На Vercel файловая система read-only, не создаем папку для логов
+# os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)
 
 # Wagtail production settings
-WAGTAILADMIN_BASE_URL = f"https://{RAILWAY_PUBLIC_DOMAIN}" if RAILWAY_PUBLIC_DOMAIN else "http://localhost:8000"
+# Получаем домен из переменных окружения Vercel
+VERCEL_URL = os.environ.get('VERCEL_URL')
+if VERCEL_URL:
+    WAGTAILADMIN_BASE_URL = f"https://{VERCEL_URL}"
+else:
+    WAGTAILADMIN_BASE_URL = "http://localhost:8000"
 
 print(f"Production settings loaded:")
 print(f"- DEBUG: {DEBUG}")
