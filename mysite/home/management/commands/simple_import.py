@@ -1,9 +1,12 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from wagtail.models import Page, Site
+from wagtail.images.models import Image
 from home.models import PortfolioIndexPage, CardsIndexPage, ProjectPage, ProjectCategory, Video
 import json
 import os
+from django.core.files.images import ImageFile
+from django.core.files.storage import default_storage
 
 class Command(BaseCommand):
     help = 'Simple import of site data - creates content from scratch'
@@ -68,37 +71,50 @@ class Command(BaseCommand):
                     video.save()
                     self.stdout.write(f"Created video: {video.title}")
 
+            # 2.5. Создаем тестовые изображения для проектов
+            self.stdout.write("Creating sample images...")
+            self.create_sample_images()
+
             # 3. Создаем структуру страниц
             self.stdout.write("Creating page structure...")
 
             # Находим корневую страницу для добавления нашей структуры
-            root = Page.objects.filter(depth=2).first()  # Welcome page
-            if not root:
-                root = Page.objects.get(depth=1)  # Root page
-
-            # Создаем главную портфолио страницу
-            portfolio_page = PortfolioIndexPage(
-                title='Portfolio Site',
-                slug='portfolio',
-                intro='Welcome to my video portfolio',
-                live=True,
-                has_unpublished_changes=False
-            )
-            root.add_child(instance=portfolio_page)
-            portfolio_page.save_revision().publish()
-            self.stdout.write(f"Created portfolio page: {portfolio_page.title}")
+            root = Page.objects.get(depth=1)  # Root page (всегда существует)
+            
+            # Проверяем, есть ли уже портфолио страница
+            existing_portfolio = PortfolioIndexPage.objects.first()
+            if existing_portfolio:
+                portfolio_page = existing_portfolio
+                self.stdout.write(f"Using existing portfolio page: {portfolio_page.title}")
+            else:
+                # Создаем главную портфолио страницу
+                portfolio_page = PortfolioIndexPage(
+                    title='Portfolio Site',
+                    slug='portfolio',
+                    intro='Welcome to my video portfolio',
+                    live=True,
+                    has_unpublished_changes=False
+                )
+                root.add_child(instance=portfolio_page)
+                portfolio_page.save_revision().publish()
+                self.stdout.write(f"Created portfolio page: {portfolio_page.title}")
 
             # Создаем страницу Cards Index
-            cards_page = CardsIndexPage(
-                title='Projects',
-                slug='projects',
-                intro='Browse my video projects by category',
-                live=True,
-                has_unpublished_changes=False
-            )
-            portfolio_page.add_child(instance=cards_page)
-            cards_page.save_revision().publish()
-            self.stdout.write(f"Created cards index page: {cards_page.title}")
+            existing_cards = CardsIndexPage.objects.first()
+            if existing_cards:
+                cards_page = existing_cards
+                self.stdout.write(f"Using existing cards page: {cards_page.title}")
+            else:
+                cards_page = CardsIndexPage(
+                    title='Projects',
+                    slug='projects',
+                    intro='Browse my video projects by category',
+                    live=True,
+                    has_unpublished_changes=False
+                )
+                portfolio_page.add_child(instance=cards_page)
+                cards_page.save_revision().publish()
+                self.stdout.write(f"Created cards index page: {cards_page.title}")
 
             # Создаем несколько примеров проектов для каждой категории
             video_ads_category = ProjectCategory.objects.filter(slug='video-ads').first()
@@ -163,3 +179,56 @@ class Command(BaseCommand):
             )
             import traceback
             self.stdout.write(traceback.format_exc())
+
+    def create_sample_images(self):
+        """Создает тестовые изображения для проектов"""
+        try:
+            from PIL import Image as PILImage
+            from io import BytesIO
+            
+            # Создаем несколько тестовых изображений разных размеров
+            sample_images = [
+                ("portfolio-thumb-1.jpg", (800, 600), (255, 100, 100)),  # Красный
+                ("portfolio-thumb-2.jpg", (800, 600), (100, 255, 100)),  # Зеленый  
+                ("portfolio-thumb-3.jpg", (800, 600), (100, 100, 255)),  # Синий
+                ("portfolio-thumb-4.jpg", (800, 600), (255, 255, 100)),  # Желтый
+                ("portfolio-thumb-5.jpg", (800, 600), (255, 100, 255)),  # Пурпурный
+                ("portfolio-thumb-6.jpg", (800, 600), (100, 255, 255)),  # Циан
+            ]
+            
+            for filename, size, color in sample_images:
+                # Проверяем, не существует ли уже изображение с таким именем
+                if Image.objects.filter(title=filename).exists():
+                    continue
+                    
+                # Создаем изображение с помощью PIL
+                img = PILImage.new('RGB', size, color)
+                
+                # Добавляем текст на изображение
+                try:
+                    from PIL import ImageDraw, ImageFont
+                    draw = ImageDraw.Draw(img)
+                    text = f"Sample Image\n{filename}"
+                    # Используем стандартный шрифт
+                    draw.text((size[0]//2-100, size[1]//2-20), text, fill=(255, 255, 255))
+                except ImportError:
+                    # Если нет PIL, просто создаем цветной прямоугольник
+                    pass
+                
+                # Сохраняем в BytesIO
+                img_io = BytesIO()
+                img.save(img_io, format='JPEG', quality=85)
+                img_io.seek(0)
+                
+                # Создаем Wagtail Image
+                wagtail_image = Image(
+                    title=filename,
+                    file=ImageFile(img_io, name=filename)
+                )
+                wagtail_image.save()
+                self.stdout.write(f"Created sample image: {filename}")
+                
+        except ImportError:
+            self.stdout.write("PIL not available, skipping image creation")
+        except Exception as e:
+            self.stdout.write(f"Error creating sample images: {e}")

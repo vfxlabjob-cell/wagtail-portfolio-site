@@ -19,8 +19,10 @@ python manage.py migrate --noinput --settings=mysite.settings.production
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --settings=mysite.settings.production
 
-# Conditionally import data
+# Conditionally clean database and import data
 if [ "$RUN_IMPORT" = "True" ]; then
+    echo ">>> RUNNING DATABASE CLEANUP"
+    python manage.py cleanup_db --settings=mysite.settings.production
     echo ">>> RUNNING DATA IMPORT"
     python manage.py simple_import --settings=mysite.settings.production
     echo ">>> DATA IMPORT COMPLETED"
