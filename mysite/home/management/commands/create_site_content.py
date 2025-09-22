@@ -19,6 +19,12 @@ class Command(BaseCommand):
             # 2. Создаем PortfolioIndexPage если не существует
             portfolio_page = PortfolioIndexPage.objects.filter(slug="home").first()
             if not portfolio_page:
+                # Сначала удаляем стандартную страницу Wagtail если она есть
+                existing_home = Page.objects.filter(slug="home").exclude(content_type__model='portfolioindexpage').first()
+                if existing_home:
+                    existing_home.delete()
+                    self.stdout.write(self.style.SUCCESS('Deleted default Wagtail home page'))
+                
                 portfolio_page = PortfolioIndexPage(
                     title="Home",
                     slug="home",
