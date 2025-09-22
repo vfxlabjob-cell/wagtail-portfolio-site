@@ -7,7 +7,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0025_remove_socialnetwork_widget_delete_contactwidget_and_more'),
+        ('home', '0024_alter_socialnetwork_widget'),
     ]
 
     operations = [

@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0031_remove_infopage_page_ptr_delete_infoindexpage_and_more'),
+        ('home', '0030_infoindexpage_infopage'),
         ('wagtailcore', '0095_groupsitepermission'),
     ]
 
