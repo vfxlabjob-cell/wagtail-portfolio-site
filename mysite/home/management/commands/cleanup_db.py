@@ -13,6 +13,14 @@ class Command(BaseCommand):
         
         try:
             with transaction.atomic():
+                # 0. Удаляем все тестовые изображения чтобы пересоздать их
+                self.stdout.write("Removing test images to recreate them...")
+                from wagtail.images.models import Image
+                test_images = Image.objects.filter(title__startswith='portfolio-thumb-')
+                deleted_images = test_images.count()
+                test_images.delete()
+                self.stdout.write(f"Deleted {deleted_images} test images")
+                
                 # 1. Удаляем все страницы с несуществующими content_type
                 self.stdout.write("Removing pages with missing content types...")
                 
