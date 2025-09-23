@@ -164,7 +164,7 @@ class ProjectPage(Page):
     )
     
     content_panels = [
-        # Убираем стандартное поле title, так как имя берется из Card Head блока
+        FieldPanel('title'),
         FieldPanel('category'),
         FieldPanel('thumbnail_image'),
         FieldPanel('body'),
