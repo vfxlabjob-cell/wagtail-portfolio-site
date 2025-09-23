@@ -284,42 +284,61 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========================================================================
     // --- ПРОВЕРКА AMBIENT LIGHT В CARD HEAD 2 БЛОКАХ ---
     // ========================================================================
-    const cardHead2Containers = document.querySelectorAll('.card-head-2-container');
-    console.log(`Найдено Card Head 2 блоков: ${cardHead2Containers.length}`);
+    console.log('🔍 Начинаем поиск Card Head 2 блоков...');
     
-    cardHead2Containers.forEach((container, index) => {
-        const ambientLight = container.querySelector('.card-head-2-ambient-light');
-        const video = container.querySelector('.card-head-2-main-video');
+    // Ждем немного, чтобы DOM полностью загрузился
+    setTimeout(() => {
+        const cardHead2Containers = document.querySelectorAll('.card-head-2-container');
+        console.log(`📊 Найдено Card Head 2 блоков: ${cardHead2Containers.length}`);
         
-        console.log(`Блок ${index + 1}:`, {
-            container: !!container,
-            ambientLight: !!ambientLight,
-            video: !!video,
-            videoId: video?.id
-        });
-        
-        if (ambientLight && video) {
-            console.log('Ambient Light элемент найден и готов к работе');
-            
-            // Инициализируем ambient light для этого блока
-            initializeAmbientLight(container, video, ambientLight);
-        } else {
-            console.warn('Ambient Light элемент не найден или видео отсутствует');
+        if (cardHead2Containers.length === 0) {
+            console.warn('⚠️ Card Head 2 блоки не найдены! Проверьте, есть ли они на странице.');
+            return;
         }
-    });
+        
+        cardHead2Containers.forEach((container, index) => {
+            const ambientLight = container.querySelector('.card-head-2-ambient-light');
+            const video = container.querySelector('.card-head-2-main-video');
+            const canvas = container.querySelector('.card-head-2-color-canvas');
+            
+            console.log(`🎬 Блок ${index + 1}:`, {
+                container: !!container,
+                ambientLight: !!ambientLight,
+                video: !!video,
+                canvas: !!canvas,
+                videoId: video?.id,
+                videoSrc: video?.src
+            });
+            
+            if (ambientLight && video && canvas) {
+                console.log('✅ Ambient Light элемент найден и готов к работе');
+                
+                // Инициализируем ambient light для этого блока
+                initializeAmbientLight(container, video, ambientLight);
+            } else {
+                console.warn('❌ Ambient Light элемент не найден или отсутствуют компоненты:', {
+                    ambientLight: !!ambientLight,
+                    video: !!video,
+                    canvas: !!canvas
+                });
+            }
+        });
+    }, 1000); // Ждем 1 секунду
 });
 
 // ========================================================================
 // --- ФУНКЦИЯ ИНИЦИАЛИЗАЦИИ AMBIENT LIGHT ---
 // ========================================================================
 function initializeAmbientLight(container, video, ambientLight) {
-    console.log('Инициализация Ambient Light для видео:', video.id);
+    console.log('🚀 Инициализация Ambient Light для видео:', video.id);
     
     const canvas = container.querySelector('.card-head-2-color-canvas');
     if (!canvas) {
-        console.warn('Canvas не найден для анализа цветов');
+        console.warn('❌ Canvas не найден для анализа цветов');
         return;
     }
+    
+    console.log('✅ Все компоненты найдены, начинаем инициализацию...');
     
     const ctx = canvas.getContext('2d');
     let colorAnalysisInterval;
