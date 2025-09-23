@@ -1,4 +1,6 @@
 console.log('🚀 JavaScript файл app.js загружен!');
+console.log('🔍 Проверяем наличие элементов на странице...');
+console.log('📊 Всего элементов .card-head-2-container:', document.querySelectorAll('.card-head-2-container').length);
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📱 DOM загружен, начинаем инициализацию...');
