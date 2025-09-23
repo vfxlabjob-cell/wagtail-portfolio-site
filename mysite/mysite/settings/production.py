@@ -62,6 +62,9 @@ AWS_S3_OBJECT_PARAMETERS = {
 # Add WhiteNoise middleware for serving static files
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
+# Add initialization middleware
+MIDDLEWARE.insert(0, 'home.middleware.InitializationMiddleware')
+
 # Configure WhiteNoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
