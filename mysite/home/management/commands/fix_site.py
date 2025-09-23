@@ -70,21 +70,21 @@ class Command(BaseCommand):
         
         # 4. Настраиваем Site объект
         if portfolio_page:
-            site, created = Site.objects.get_or_create(
+            # Удаляем все существующие сайты
+            Site.objects.all().delete()
+            self.stdout.write('🗑️ Deleted all existing sites')
+            
+            # Создаем новый сайт
+            site = Site.objects.create(
+                hostname='web-production-b4d2a.up.railway.app',
+                port=443,
+                root_page=portfolio_page,
                 is_default_site=True,
-                defaults={
-                    'hostname': 'web-production-b4d2a.up.railway.app',
-                    'port': 443,
-                    'root_page': portfolio_page,
-                }
+                site_name='Portfolio Site'
             )
-            if not created:
-                site.hostname = 'web-production-b4d2a.up.railway.app'
-                site.port = 443
-                site.root_page = portfolio_page
-                site.save()
-                self.stdout.write(self.style.SUCCESS('✅ Updated default site'))
-            else:
-                self.stdout.write(self.style.SUCCESS('✅ Created default site'))
+            self.stdout.write(self.style.SUCCESS(f'✅ Created new site: {site.site_name}'))
+            self.stdout.write(f'   Hostname: {site.hostname}')
+            self.stdout.write(f'   Root page: {site.root_page.title}')
+            self.stdout.write(f'   Is default: {site.is_default_site}')
         
         self.stdout.write(self.style.SUCCESS("=== SITE FIX COMPLETE ==="))
