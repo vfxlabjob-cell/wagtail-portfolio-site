@@ -211,6 +211,16 @@ class ProjectPage(Page):
                     return video
         # Если Card Head 2 не найден, возвращаем None
         return None
+    
+    def get_project_name(self):
+        """Получаем реальное имя проекта из Card Head 2 блока"""
+        for block in self.body:
+            if block.block_type == 'card_head_2' and hasattr(block.value, 'get'):
+                project_name = block.value.get('project_name')
+                if project_name:
+                    return project_name
+        # Если имя проекта не найдено, возвращаем title или "Untitled Project"
+        return self.title or 'Untitled Project'
 
 
 class InfoIndexPage(Page):

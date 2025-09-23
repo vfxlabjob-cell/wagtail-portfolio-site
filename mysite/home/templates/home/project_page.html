@@ -22,24 +22,7 @@
         </button>
     </div>
 
-    <script>
-        // Автоматически обновляем заголовок страницы из первого Card Head блока
-        document.addEventListener('DOMContentLoaded', function() {
-            const cardHeadBlock = document.querySelector('.card-head-container');
-            if (cardHeadBlock) {
-                const projectNameElement = cardHeadBlock.querySelector('.field-value');
-                if (projectNameElement) {
-                    const projectName = projectNameElement.textContent.trim();
-                    
-                    // Обновляем заголовок страницы
-                    const projectHeading = document.getElementById('project-heading');
-                    if (projectHeading) {
-                        projectHeading.textContent = projectName;
-                    }
-                }
-            }
-        });
-    </script>
+    {# JavaScript код для обновления заголовка больше не нужен - имя загружается с сервера #}
 
 {% endblock %}
 
@@ -52,7 +35,7 @@
             </a>
         </div>
 
-        <h1 id="project-heading">{{ page.title }}</h1>
+        <h1 id="project-heading">{{ page.get_project_name }}</h1>
     </div>
 
     {# --- CARD HEAD 2 БЛОКИ (ВНЕ КОНТЕЙНЕРА) --- #}
