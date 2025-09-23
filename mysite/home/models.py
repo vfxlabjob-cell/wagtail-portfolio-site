@@ -170,12 +170,6 @@ class ProjectPage(Page):
         FieldPanel('body'),
     ]
     
-    def clean(self):
-        super().clean()
-        # Автоматически генерируем slug из title, если он не задан
-        if not self.slug and self.title:
-            from django.utils.text import slugify
-            self.slug = slugify(self.title)
 
     parent_page_types = ['home.PortfolioIndexPage']
     subpage_types = []
