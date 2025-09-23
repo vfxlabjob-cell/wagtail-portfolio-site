@@ -171,23 +171,18 @@ class ProjectPage(Page):
     ]
     
     def save(self, *args, **kwargs):
-        # Автоматически генерируем slug из названия проекта, если он не задан
-        if not self.slug:
-            project_name = self.get_admin_display_title()
-            if project_name and project_name != self.title:
-                # Создаем slug из названия проекта
-                from django.utils.text import slugify
-                self.slug = slugify(project_name)
-            else:
-                # Если нет названия проекта, используем стандартный slug
-                from django.utils.text import slugify
-                self.slug = slugify(self.title)
+        # Автоматически генерируем slug из title, если он не задан
+        if not self.slug and self.title:
+            from django.utils.text import slugify
+            self.slug = slugify(self.title)
         
-        # Обновляем url_path при сохранении
+        # Сначала сохраняем объект
+        super().save(*args, **kwargs)
+        
+        # Затем обновляем url_path если есть родитель
         if self.get_parent():
             self.set_url_path(self.get_parent())
-        
-        super().save(*args, **kwargs)
+            super().save(update_fields=['url_path'])
 
     parent_page_types = ['home.PortfolioIndexPage']
     subpage_types = []
