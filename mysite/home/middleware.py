@@ -1,6 +1,6 @@
 import os
 from django.contrib.auth import get_user_model
-from wagtail.models import Page
+from wagtail.models import Page, Site
 from home.models import PortfolioIndexPage, ProjectCategory
 
 class InitializationMiddleware:
@@ -35,28 +35,28 @@ class InitializationMiddleware:
             # 2. Проверяем и исправляем структуру страниц
             root_page = Page.objects.filter(depth=1).first()
             if root_page:
-                # Удаляем все страницы кроме корневой
-                all_pages = Page.objects.exclude(id=root_page.id)
-                for page in all_pages:
-                    print(f'Deleting page: {page.title}')
-                    page.delete()
+                # Проверяем, есть ли уже Portfolio страница
+                portfolio_page = PortfolioIndexPage.objects.filter(slug="home").first()
                 
-                # Сбрасываем счетчики корневой страницы
-                root_page.numchild = 0
+                if not portfolio_page:
+                    # Создаем новую главную страницу только если её нет
+                    portfolio_page = PortfolioIndexPage(
+                        title="Portfolio",
+                        slug="home",
+                        intro='Welcome to my creative portfolio'
+                    )
+                    
+                    root_page.add_child(instance=portfolio_page)
+                    portfolio_page.live = True
+                    portfolio_page.save()
+                    
+                    print(f'✅ Created Portfolio page: {portfolio_page.title}')
+                else:
+                    print(f'Portfolio page already exists: {portfolio_page.title}')
+                
+                # Обновляем счетчики корневой страницы
+                root_page.numchild = Page.objects.filter(parent=root_page).count()
                 root_page.save()
-                
-                # Создаем новую главную страницу
-                portfolio_page = PortfolioIndexPage(
-                    title="Portfolio",
-                    slug="home",
-                    intro='Welcome to my creative portfolio'
-                )
-                
-                root_page.add_child(instance=portfolio_page)
-                portfolio_page.live = True
-                portfolio_page.save()
-                
-                print(f'✅ Created Portfolio page: {portfolio_page.title}')
             
             # 3. Создаем категории
             categories_data = [
@@ -77,6 +77,25 @@ class InitializationMiddleware:
                     print(f'✅ Created category: {category.name}')
                 else:
                     print(f'Category already exists: {category.name}')
+            
+            # 4. Настраиваем Site объект
+            if portfolio_page:
+                site, created = Site.objects.get_or_create(
+                    is_default_site=True,
+                    defaults={
+                        'hostname': 'web-production-b4d2a.up.railway.app',
+                        'port': 443,
+                        'root_page': portfolio_page,
+                    }
+                )
+                if not created:
+                    site.hostname = 'web-production-b4d2a.up.railway.app'
+                    site.port = 443
+                    site.root_page = portfolio_page
+                    site.save()
+                    print('✅ Updated default site')
+                else:
+                    print('✅ Created default site')
             
             print("=== SITE INITIALIZATION COMPLETE ===")
             
