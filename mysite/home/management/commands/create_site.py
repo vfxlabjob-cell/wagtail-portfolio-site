@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Create site with PortfolioIndexPage as root'
 
     def handle(self, *args, **options):
-        self.stdout.write("=== CREATING SITE ===")
+        self.stdout.write("=== CREATING SITE (TEST DEPLOY) ===")
         
         try:
             # 1. Находим Portfolio страницу
