@@ -164,12 +164,39 @@ class ProjectPage(Page):
     )
     
     content_panels = [
-        FieldPanel('title'),
         FieldPanel('category'),
         FieldPanel('thumbnail_image'),
         FieldPanel('body'),
     ]
     
+    def clean(self):
+        super().clean()
+        # Автоматически генерируем title из Card Head 2 блока
+        if not self.title or self.title == 'Untitled':
+            project_name = self.get_project_name_from_body()
+            if project_name:
+                self.title = project_name
+            else:
+                self.title = 'Untitled Project'
+    
+    def get_project_name_from_body(self):
+        """Извлекаем название проекта из Card Head 2 блока"""
+        if not self.body:
+            return None
+            
+        for block in self.body:
+            if block.block_type == 'card_head_2' and hasattr(block.value, 'get'):
+                project_name = block.value.get('project_name')
+                if project_name:
+                    return project_name
+        return None
+    
+    def get_admin_display_title(self):
+        """Отображаем название проекта в админке"""
+        project_name = self.get_project_name_from_body()
+        if project_name:
+            return project_name
+        return self.title or 'Untitled Project'
 
     parent_page_types = ['home.PortfolioIndexPage']
     subpage_types = []
