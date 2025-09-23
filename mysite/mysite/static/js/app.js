@@ -1,4 +1,7 @@
+console.log('🚀 JavaScript файл app.js загружен!');
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('📱 DOM загружен, начинаем инициализацию...');
     gsap.registerPlugin(ScrollTrigger);
 
     // ========================================================================
