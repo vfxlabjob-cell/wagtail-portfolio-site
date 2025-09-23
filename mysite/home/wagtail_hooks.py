@@ -17,7 +17,6 @@ def register_cleanup_menu_item():
     return MenuItem(
         'Cleanup Media',
         '/admin/cleanup-media/',
-        classnames='icon icon-bin',
         order=1000
     )
 
