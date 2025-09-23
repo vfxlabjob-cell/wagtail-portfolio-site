@@ -1,0 +1,156 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n %}
+
+{% block titletag %}Cleanup Unused Media Files{% endblock %}
+
+{% block content %}
+    <header class="merged">
+        <div class="row">
+            <div class="left">
+                <h1>Cleanup Unused Media Files</h1>
+                <p class="help-block">Find and delete media files that are no longer used in your content.</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="nice-padding">
+        <div class="help-block help-info">
+            <p>This tool will help you find and delete media files that are no longer referenced in your content. This can help save storage space and reduce costs.</p>
+        </div>
+
+        <div class="form-group">
+            <button id="check-files-btn" class="button button-primary">
+                <span class="icon icon-search"></span>
+                Check for Unused Files
+            </button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <h2>Unused Files Found</h2>
+            <div id="files-list"></div>
+            
+            <div class="form-group">
+                <button id="delete-files-btn" class="button button-secondary" style="display: none;">
+                    <span class="icon icon-bin"></span>
+                    Delete Selected Files
+                </button>
+            </div>
+        </div>
+
+        <div id="loading" style="display: none;">
+            <p>Checking for unused files...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkBtn = document.getElementById('check-files-btn');
+            const deleteBtn = document.getElementById('delete-files-btn');
+            const results = document.getElementById('results');
+            const filesList = document.getElementById('files-list');
+            const loading = document.getElementById('loading');
+
+            checkBtn.addEventListener('click', function() {
+                loading.style.display = 'block';
+                results.style.display = 'none';
+                checkBtn.disabled = true;
+
+                fetch('/admin/cleanup-media/check/')
+                    .then(response => response.json())
+                    .then(data => {
+                        loading.style.display = 'none';
+                        checkBtn.disabled = false;
+                        
+                        if (data.total_unused === 0) {
+                            filesList.innerHTML = '<p class="help-block help-success">No unused files found!</p>';
+                        } else {
+                            let html = '<p>Found ' + data.total_unused + ' unused files:</p>';
+                            
+                            if (data.unused_images.length > 0) {
+                                html += '<h3>Unused Images (' + data.unused_images.length + ')</h3>';
+                                html += '<ul>';
+                                data.unused_images.forEach(function(image) {
+                                    html += '<li><label><input type="checkbox" value="' + image.id + '" data-type="image"> ' + image.name + ' (' + image.title + ')</label></li>';
+                                });
+                                html += '</ul>';
+                            }
+                            
+                            if (data.unused_documents.length > 0) {
+                                html += '<h3>Unused Documents (' + data.unused_documents.length + ')</h3>';
+                                html += '<ul>';
+                                data.unused_documents.forEach(function(doc) {
+                                    html += '<li><label><input type="checkbox" value="' + doc.id + '" data-type="document"> ' + doc.name + ' (' + doc.title + ')</label></li>';
+                                });
+                                html += '</ul>';
+                            }
+                            
+                            filesList.innerHTML = html;
+                            deleteBtn.style.display = 'inline-block';
+                        }
+                        
+                        results.style.display = 'block';
+                    })
+                    .catch(error => {
+                        loading.style.display = 'none';
+                        checkBtn.disabled = false;
+                        filesList.innerHTML = '<p class="help-block help-error">Error checking files: ' + error.message + '</p>';
+                        results.style.display = 'block';
+                    });
+            });
+
+            deleteBtn.addEventListener('click', function() {
+                const checkboxes = filesList.querySelectorAll('input[type="checkbox"]:checked');
+                const imageIds = [];
+                const documentIds = [];
+
+                checkboxes.forEach(function(checkbox) {
+                    if (checkbox.dataset.type === 'image') {
+                        imageIds.push(checkbox.value);
+                    } else if (checkbox.dataset.type === 'document') {
+                        documentIds.push(checkbox.value);
+                    }
+                });
+
+                if (imageIds.length === 0 && documentIds.length === 0) {
+                    alert('Please select files to delete.');
+                    return;
+                }
+
+                if (!confirm('Are you sure you want to delete ' + (imageIds.length + documentIds.length) + ' files? This action cannot be undone.')) {
+                    return;
+                }
+
+                deleteBtn.disabled = true;
+                deleteBtn.textContent = 'Deleting...';
+
+                fetch('/admin/cleanup-media/delete/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify({
+                        image_ids: imageIds,
+                        document_ids: documentIds
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Successfully deleted ' + data.deleted_count + ' files.');
+                        results.style.display = 'none';
+                    } else {
+                        alert('Error deleting files.');
+                    }
+                })
+                .catch(error => {
+                    alert('Error deleting files: ' + error.message);
+                })
+                .finally(() => {
+                    deleteBtn.disabled = false;
+                    deleteBtn.innerHTML = '<span class="icon icon-bin"></span> Delete Selected Files';
+                });
+            });
+        });
+    </script>
+{% endblock %}
