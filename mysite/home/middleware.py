@@ -9,10 +9,7 @@ class InitializationMiddleware:
         self.initialized = False
 
     def __call__(self, request):
-        if not self.initialized and os.environ.get('DJANGO_SETTINGS_MODULE') == 'mysite.settings.production':
-            self.initialize_site()
-            self.initialized = True
-
+        # Отключаем middleware, используем команду в Procfile
         response = self.get_response(request)
         return response
 
