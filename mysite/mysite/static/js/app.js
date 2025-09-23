@@ -280,4 +280,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Виджет появляется без анимации
     }
+
+    // ========================================================================
+    // --- ПРОВЕРКА AMBIENT LIGHT В CARD HEAD 2 БЛОКАХ ---
+    // ========================================================================
+    const cardHead2Containers = document.querySelectorAll('.card-head-2-container');
+    console.log(`Найдено Card Head 2 блоков: ${cardHead2Containers.length}`);
+    
+    cardHead2Containers.forEach((container, index) => {
+        const ambientLight = container.querySelector('.card-head-2-ambient-light');
+        const video = container.querySelector('.card-head-2-main-video');
+        
+        console.log(`Блок ${index + 1}:`, {
+            container: !!container,
+            ambientLight: !!ambientLight,
+            video: !!video,
+            videoId: video?.id
+        });
+        
+        if (ambientLight && video) {
+            console.log('Ambient Light элемент найден и готов к работе');
+        } else {
+            console.warn('Ambient Light элемент не найден или видео отсутствует');
+        }
+    });
 });
