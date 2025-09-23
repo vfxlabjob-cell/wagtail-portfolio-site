@@ -170,19 +170,12 @@ class ProjectPage(Page):
         FieldPanel('body'),
     ]
     
-    def save(self, *args, **kwargs):
+    def clean(self):
+        super().clean()
         # Автоматически генерируем slug из title, если он не задан
         if not self.slug and self.title:
             from django.utils.text import slugify
             self.slug = slugify(self.title)
-        
-        # Сначала сохраняем объект
-        super().save(*args, **kwargs)
-        
-        # Затем обновляем url_path если есть родитель
-        if self.get_parent():
-            self.set_url_path(self.get_parent())
-            super().save(update_fields=['url_path'])
 
     parent_page_types = ['home.PortfolioIndexPage']
     subpage_types = []
