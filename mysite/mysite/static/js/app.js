@@ -300,8 +300,255 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (ambientLight && video) {
             console.log('Ambient Light элемент найден и готов к работе');
+            
+            // Инициализируем ambient light для этого блока
+            initializeAmbientLight(container, video, ambientLight);
         } else {
             console.warn('Ambient Light элемент не найден или видео отсутствует');
         }
     });
 });
+
+// ========================================================================
+// --- ФУНКЦИЯ ИНИЦИАЛИЗАЦИИ AMBIENT LIGHT ---
+// ========================================================================
+function initializeAmbientLight(container, video, ambientLight) {
+    console.log('Инициализация Ambient Light для видео:', video.id);
+    
+    const canvas = container.querySelector('.card-head-2-color-canvas');
+    if (!canvas) {
+        console.warn('Canvas не найден для анализа цветов');
+        return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    let colorAnalysisInterval;
+    let isAnalyzing = false;
+    
+    // Переменные для плавного смешивания цветов
+    let currentColors = {
+        primary: [128, 128, 128],   // Текущие цвета (серый по умолчанию)
+        secondary: [128, 128, 128],
+        tertiary: [128, 128, 128]
+    };
+    const lerpSpeed = 0.1; // Скорость смешивания
+    
+    // История цветов для сглаживания
+    const colorHistory = {
+        primary: [],
+        secondary: [],
+        tertiary: []
+    };
+    const maxHistorySize = 5;
+    
+    // Функция для извлечения доминирующих цветов из видео
+    function extractDominantColors() {
+        if (!video.videoWidth || !video.videoHeight) return null;
+        
+        // Устанавливаем размер canvas
+        canvas.width = 64; // Маленький размер для быстрого анализа
+        canvas.height = 36;
+        
+        // Рисуем кадр видео на canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Получаем данные пикселей
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        
+        // Анализируем цвета
+        const colorCounts = {};
+        const sampleSize = 4; // Анализируем каждый 4-й пиксель для производительности
+        
+        for (let i = 0; i < data.length; i += sampleSize * 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            
+            // Пропускаем слишком темные и слишком светлые пиксели
+            const brightness = (r + g + b) / 3;
+            if (brightness < 30 || brightness > 225) continue;
+            
+            // Квантуем цвета для группировки похожих
+            const quantizedR = Math.floor(r / 32) * 32;
+            const quantizedG = Math.floor(g / 32) * 32;
+            const quantizedB = Math.floor(b / 32) * 32;
+            
+            const colorKey = `${quantizedR},${quantizedG},${quantizedB}`;
+            colorCounts[colorKey] = (colorCounts[colorKey] || 0) + 1;
+        }
+        
+        // Находим доминирующие цвета
+        const sortedColors = Object.entries(colorCounts)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 3)
+            .map(([color]) => color.split(',').map(Number));
+        
+        return sortedColors;
+    }
+    
+    // Функция для плавного смешивания цветов (lerp)
+    function lerpColor(current, target, t) {
+        return [
+            Math.round(current[0] + (target[0] - current[0]) * t),
+            Math.round(current[1] + (target[1] - current[1]) * t),
+            Math.round(current[2] + (target[2] - current[2]) * t)
+        ];
+    }
+    
+    // Функция для добавления цвета в историю
+    function addColorToHistory(colorType, color) {
+        colorHistory[colorType].push([...color]); // Копируем массив
+        
+        // Ограничиваем размер истории
+        if (colorHistory[colorType].length > maxHistorySize) {
+            colorHistory[colorType].shift(); // Удаляем самый старый цвет
+        }
+    }
+    
+    // Функция для усреднения цветов из истории
+    function getAverageColor(colorType) {
+        const history = colorHistory[colorType];
+        if (history.length === 0) {
+            return [128, 128, 128]; // Серый по умолчанию
+        }
+        
+        // Суммируем все цвета
+        const sum = [0, 0, 0];
+        for (const color of history) {
+            sum[0] += color[0];
+            sum[1] += color[1];
+            sum[2] += color[2];
+        }
+        
+        // Возвращаем среднее значение
+        return [
+            Math.round(sum[0] / history.length),
+            Math.round(sum[1] / history.length),
+            Math.round(sum[2] / history.length)
+        ];
+    }
+    
+    // Функция для обновления ambient light с плавным смешиванием
+    function updateAmbientLight(colors) {
+        if (!colors || colors.length === 0) return;
+        
+        // Получаем новые цвета из видео
+        const newPrimary = colors[0];
+        const newSecondary = colors[1] || newPrimary;
+        const newTertiary = colors[2] || newSecondary;
+        
+        // Добавляем новые цвета в историю
+        addColorToHistory('primary', newPrimary);
+        addColorToHistory('secondary', newSecondary);
+        addColorToHistory('tertiary', newTertiary);
+        
+        // Получаем усредненные цвета из истории
+        const averagedPrimary = getAverageColor('primary');
+        const averagedSecondary = getAverageColor('secondary');
+        const averagedTertiary = getAverageColor('tertiary');
+        
+        // Плавно смешиваем текущие цвета с усредненными
+        currentColors.primary = lerpColor(currentColors.primary, averagedPrimary, lerpSpeed);
+        currentColors.secondary = lerpColor(currentColors.secondary, averagedSecondary, lerpSpeed);
+        currentColors.tertiary = lerpColor(currentColors.tertiary, averagedTertiary, lerpSpeed);
+        
+        // Создаем RGB строки
+        const primaryRgb = `rgb(${currentColors.primary[0]}, ${currentColors.primary[1]}, ${currentColors.primary[2]})`;
+        const secondaryRgb = `rgb(${currentColors.secondary[0]}, ${currentColors.secondary[1]}, ${currentColors.secondary[2]})`;
+        const tertiaryRgb = `rgb(${currentColors.tertiary[0]}, ${currentColors.tertiary[1]}, ${currentColors.tertiary[2]})`;
+        
+        // Создаем радиальный градиент
+        const gradient = `radial-gradient(ellipse at center, 
+            ${primaryRgb} 0%, 
+            ${secondaryRgb} 30%, 
+            ${tertiaryRgb} 60%, 
+            transparent 100%)`;
+        
+        ambientLight.style.background = gradient;
+        ambientLight.classList.add('active');
+        
+        console.log('Ambient Light обновлен с цветами:', {
+            primary: primaryRgb,
+            secondary: secondaryRgb,
+            tertiary: tertiaryRgb
+        });
+    }
+    
+    // Функция для анализа цветов в реальном времени
+    function analyzeColors() {
+        if (isAnalyzing) return;
+        isAnalyzing = true;
+        
+        const colors = extractDominantColors();
+        if (colors) {
+            updateAmbientLight(colors);
+        }
+        
+        isAnalyzing = false;
+    }
+    
+    // Автозапуск видео и запуск анализа цветов
+    video.addEventListener('canplay', function() {
+        video.play().then(() => {
+            console.log('Card Head 2 видео запущено с Ambient Light');
+            
+            // Запускаем анализ цветов 10 раз в секунду (каждые 100ms)
+            setTimeout(() => {
+                colorAnalysisInterval = setInterval(() => {
+                    if (!video.paused && !video.ended) {
+                        analyzeColors();
+                    }
+                }, 100); // 10 раз в секунду
+            }, 500);
+            
+        }).catch((error) => {
+            console.warn('Не удалось запустить видео:', error);
+        });
+    });
+    
+    // Останавливаем анализ при паузе, но оставляем подсветку
+    video.addEventListener('pause', function() {
+        if (colorAnalysisInterval) {
+            clearInterval(colorAnalysisInterval);
+            colorAnalysisInterval = null;
+        }
+        // Убираем эту строку, чтобы подсветка оставалась включенной
+        // ambientLight.classList.remove('active');
+    });
+    
+    // Возобновляем анализ при воспроизведении
+    video.addEventListener('play', function() {
+        if (!colorAnalysisInterval) {
+            colorAnalysisInterval = setInterval(() => {
+                if (!video.paused && !video.ended) {
+                    analyzeColors();
+                }
+            }, 100); // 10 раз в секунду
+        }
+    });
+    
+    // Очистка при завершении видео
+    video.addEventListener('ended', function() {
+        if (colorAnalysisInterval) {
+            clearInterval(colorAnalysisInterval);
+            colorAnalysisInterval = null;
+        }
+        ambientLight.classList.remove('active');
+    });
+    
+    // Обновляем заголовок страницы
+    const projectName = video.getAttribute('data-project-name');
+    const projectHeading = document.getElementById('project-heading');
+    if (projectHeading && projectName) {
+        projectHeading.textContent = projectName;
+    }
+    
+    // Очистка при удалении элемента
+    container.addEventListener('beforeunload', function() {
+        if (colorAnalysisInterval) {
+            clearInterval(colorAnalysisInterval);
+            colorAnalysisInterval = null;
+        }
+    });
+}
