@@ -506,7 +506,10 @@ function initializeAmbientLight(container, video, ambientLight) {
         
         const colors = extractDominantColors();
         if (colors) {
+            console.log('🎨 Найдены цвета:', colors);
             updateAmbientLight(colors);
+        } else {
+            console.log('⚠️ Цвета не найдены');
         }
         
         isAnalyzing = false;
@@ -514,11 +517,14 @@ function initializeAmbientLight(container, video, ambientLight) {
     
     // Автозапуск видео и запуск анализа цветов
     video.addEventListener('canplay', function() {
+        console.log('🎥 Видео готово к воспроизведению, размеры:', video.videoWidth, 'x', video.videoHeight);
+        
         video.play().then(() => {
-            console.log('Card Head 2 видео запущено с Ambient Light');
+            console.log('▶️ Card Head 2 видео запущено с Ambient Light');
             
             // Запускаем анализ цветов 10 раз в секунду (каждые 100ms)
             setTimeout(() => {
+                console.log('🔄 Запускаем анализ цветов...');
                 colorAnalysisInterval = setInterval(() => {
                     if (!video.paused && !video.ended) {
                         analyzeColors();
@@ -527,8 +533,13 @@ function initializeAmbientLight(container, video, ambientLight) {
             }, 500);
             
         }).catch((error) => {
-            console.warn('Не удалось запустить видео:', error);
+            console.warn('❌ Не удалось запустить видео:', error);
         });
+    });
+    
+    // Добавляем обработчик для события loadeddata
+    video.addEventListener('loadeddata', function() {
+        console.log('📹 Видео загружено, размеры:', video.videoWidth, 'x', video.videoHeight);
     });
     
     // Останавливаем анализ при паузе, но оставляем подсветку
