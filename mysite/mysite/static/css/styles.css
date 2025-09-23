@@ -184,6 +184,35 @@ body {
     padding: 0;
     color: var(--color-text-primary);
     overflow-x: hidden; /* Убираем горизонтальную прокрутку */
+    width: 100%;
+    max-width: 100vw; /* Максимальная ширина = ширина viewport */
+}
+
+/* Дополнительная защита от горизонтальной прокрутки */
+html {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+}
+
+/* Общие правила для предотвращения переполнения */
+* {
+    box-sizing: border-box;
+}
+
+/* Дополнительная защита для мобильных устройств */
+@media (max-width: 768px) {
+    * {
+        max-width: 100vw;
+    }
+    
+    /* Убираем горизонтальные отступы у элементов, которые могут выходить за границы */
+    .stream-image-2-1, .stream-video-2-1 {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+        max-width: 100vw;
+    }
 }
 
 /* ==============================================
@@ -690,8 +719,21 @@ body {
 
 @media (max-width: 768px) {
     .container {
-        width: 95%;
-        padding: 20px;
+        width: 100%;
+        max-width: 100vw;
+        padding: 15px;
+        box-sizing: border-box; /* Включаем padding в общую ширину */
+        margin: 0;
+    }
+    
+    /* Дополнительная защита от переполнения */
+    * {
+        box-sizing: border-box;
+    }
+    
+    /* Убираем горизонтальные отступы у всех элементов */
+    .container > * {
+        max-width: 100%;
     }
     
     .card-head-container {
@@ -769,9 +811,24 @@ body {
 /* Адаптивность для Card Head 2 */
 @media (max-width: 768px) {
     .card-head-2-container {
-        margin: 30px 0; /* Уменьшенные отступы на мобильных */
+        margin: 20px 0; /* Уменьшенные отступы на мобильных */
         height: auto; /* Убираем фиксированную высоту для aspect-ratio */
-        padding: 0 15px; /* Меньше отступы по бокам */
+        padding: 0 10px; /* Меньше отступы по бокам */
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+    
+    .card-head-2-video-wrapper {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    .card-head-2-main-video {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
     }
     
     .card-head-2-video-wrapper::before {
