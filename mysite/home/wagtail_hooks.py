@@ -2,6 +2,8 @@ from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet, SnippetChooserViewSet
 from wagtail import hooks
 from django.utils.text import slugify
+from django.templatetags.static import static
+from django.utils.html import format_html
 from .models import Video, ProjectCategory, ProjectPage
 
 
@@ -64,3 +66,12 @@ def auto_generate_slug_for_project_page(request, parent, page_class):
         if not page_class.slug and page_class.title:
             page_class.slug = slugify(page_class.title)
             print(f"✅ Auto-generated slug for ProjectPage: {page_class.title} -> {page_class.slug}")
+
+
+@hooks.register('insert_global_admin_js')
+def global_admin_js():
+    """Добавляем JavaScript для автоматического создания slug"""
+    return format_html(
+        '<script src="{}"></script>',
+        static('js/admin-slug-auto.js')
+    )
