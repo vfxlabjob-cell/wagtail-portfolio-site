@@ -43,6 +43,13 @@ class ProjectCategory(models.Model):
         ], heading="Category Content"),
         MultiFieldPanel([FieldPanel("seo_title"), FieldPanel("search_description"),], heading="SEO Settings")
     ]
+    def save(self, *args, **kwargs):
+        # Автоматически создаем slug из названия, если он не задан
+        if not self.slug and self.name:
+            from django.utils.text import slugify
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return self.name
     class Meta:
@@ -178,6 +185,11 @@ class ProjectPage(Page):
                 self.title = project_name
             else:
                 self.title = 'Untitled Project'
+        
+        # Автоматически создаем slug из title, если он не задан
+        if not self.slug and self.title:
+            from django.utils.text import slugify
+            self.slug = slugify(self.title)
     
     def get_project_name_from_body(self):
         """Извлекаем название проекта из Card Head 2 блока"""
