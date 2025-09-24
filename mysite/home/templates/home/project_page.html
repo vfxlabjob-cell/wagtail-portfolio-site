@@ -22,7 +22,25 @@
         </button>
     </div>
 
-    {# JavaScript код для обновления заголовка больше не нужен - имя загружается с сервера #}
+    <script>
+        function smartBack() {
+            // Проверяем, есть ли история браузера
+            if (window.history.length > 1) {
+                // Пытаемся вернуться назад
+                window.history.back();
+            } else {
+                // Если нет истории (прямая ссылка), возвращаем в категорию
+                const category = "{{ page.category.slug|default:'all' }}";
+                if (category === 'all') {
+                    // Если нет категории, идем на главную
+                    window.location.href = '/';
+                } else {
+                    // Возвращаем в категорию
+                    window.location.href = '/?category=' + category;
+                }
+            }
+        }
+    </script>
 
 {% endblock %}
 
@@ -30,7 +48,7 @@
     <div class="project-header">
         {# --- КНОПКА НАЗАД --- #}
         <div class="back-button">
-            <a href="javascript:history.back()" class="back-btn">
+            <a href="#" class="back-btn" onclick="smartBack()">
                 <img src="{% static 'icons/cancel.svg' %}" alt="Назад" class="back-icon">
             </a>
         </div>
