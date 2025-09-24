@@ -27,20 +27,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Для ProjectPage (title -> slug)
-    const pageTitleField = document.querySelector('input[name="title"]');
+    // Для ProjectPage (Project Name из Card Head 2 -> slug)
+    const projectNameField = document.querySelector('input[name*="project_name"]');
     const pageSlugField = document.querySelector('input[name="slug"]');
     
-    if (pageTitleField && pageSlugField) {
-        console.log('✅ Found ProjectPage fields');
+    if (projectNameField && pageSlugField) {
+        console.log('✅ Found ProjectPage fields (Project Name -> slug)');
         
-        pageTitleField.addEventListener('input', function() {
+        projectNameField.addEventListener('input', function() {
             if (!pageSlugField.value || pageSlugField.value === '') {
                 const slug = createSlug(this.value);
                 pageSlugField.value = slug;
-                console.log(`✅ Auto-generated slug: "${this.value}" -> "${slug}"`);
+                console.log(`✅ Auto-generated slug for ProjectPage: "${this.value}" -> "${slug}"`);
             }
         });
+        
+        // Также обрабатываем случай, когда Project Name уже заполнен
+        if (projectNameField.value && (!pageSlugField.value || pageSlugField.value === '')) {
+            const slug = createSlug(projectNameField.value);
+            pageSlugField.value = slug;
+            console.log(`✅ Auto-generated slug for existing ProjectPage: "${projectNameField.value}" -> "${slug}"`);
+        }
     }
     
     // Для InfoPage
