@@ -1,6 +1,8 @@
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet, SnippetChooserViewSet
-from .models import Video
+from wagtail import hooks
+from django.utils.text import slugify
+from .models import Video, ProjectCategory, ProjectPage
 
 
 class VideoChooserViewSet(SnippetChooserViewSet):
@@ -35,3 +37,30 @@ class VideoViewSet(SnippetViewSet):
 
 # Регистрируем наш финальный, настроенный ViewSet
 register_snippet(VideoViewSet)
+
+
+@hooks.register('before_create_snippet')
+def auto_generate_slug_for_category(request, instance):
+    """Автоматически создаем slug для ProjectCategory"""
+    if isinstance(instance, ProjectCategory):
+        if not instance.slug and instance.name:
+            instance.slug = slugify(instance.name)
+            print(f"✅ Auto-generated slug for ProjectCategory: {instance.name} -> {instance.slug}")
+
+
+@hooks.register('before_edit_snippet')
+def auto_generate_slug_for_category_edit(request, instance):
+    """Автоматически создаем slug для ProjectCategory при редактировании"""
+    if isinstance(instance, ProjectCategory):
+        if not instance.slug and instance.name:
+            instance.slug = slugify(instance.name)
+            print(f"✅ Auto-generated slug for ProjectCategory (edit): {instance.name} -> {instance.slug}")
+
+
+@hooks.register('before_create_page')
+def auto_generate_slug_for_project_page(request, parent, page_class):
+    """Автоматически создаем slug для ProjectPage"""
+    if page_class == ProjectPage:
+        if not page_class.slug and page_class.title:
+            page_class.slug = slugify(page_class.title)
+            print(f"✅ Auto-generated slug for ProjectPage: {page_class.title} -> {page_class.slug}")
