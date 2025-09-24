@@ -48,6 +48,7 @@ class ProjectCategory(models.Model):
         if not self.slug and self.name:
             from django.utils.text import slugify
             self.slug = slugify(self.name)
+            print(f"✅ Auto-generated slug for ProjectCategory: {self.name} -> {self.slug}")
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -190,6 +191,12 @@ class ProjectPage(Page):
         if not self.slug and self.title:
             from django.utils.text import slugify
             self.slug = slugify(self.title)
+            print(f"✅ Auto-generated slug for ProjectPage: {self.title} -> {self.slug}")
+    
+    def save(self, *args, **kwargs):
+        # Вызываем clean() для генерации title и slug
+        self.clean()
+        super().save(*args, **kwargs)
     
     def get_project_name_from_body(self):
         """Извлекаем название проекта из Card Head 2 блока"""
